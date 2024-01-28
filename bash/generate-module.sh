@@ -24,6 +24,7 @@ cd $MODULE_NAME || exit 1
 
 mkdir interfaces
 mkdir entities
+mkdir dtos
 
 # Display a success message
 echo "Module '$MODULE_NAME' created successfully."
