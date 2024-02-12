@@ -1,6 +1,6 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Topping } from './topping.entity';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class ToppingOption extends AbstractEntity {

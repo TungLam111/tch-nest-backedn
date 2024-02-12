@@ -1,7 +1,5 @@
-import { IsEnum } from 'class-validator';
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { ToppingType } from 'src/helper/common/enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class Topping extends AbstractEntity {
@@ -15,8 +13,7 @@ export class Topping extends AbstractEntity {
     description: string;
 
     @Column()
-    @IsEnum(ToppingType)
-    toppingType: string;
+    toppingType: string; // ToppingType
 
     @Column({ default: true })
     isRequired: boolean;

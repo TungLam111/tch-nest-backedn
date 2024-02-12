@@ -1,7 +1,5 @@
-import { IsEnum } from 'class-validator';
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { PaymentMethodType } from 'src/helper/common/enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class PaymentMethod extends AbstractEntity {
@@ -15,6 +13,5 @@ export class PaymentMethod extends AbstractEntity {
     description: string;
 
     @Column()
-    @IsEnum(PaymentMethodType)
     paymentMethodType: string;
 }

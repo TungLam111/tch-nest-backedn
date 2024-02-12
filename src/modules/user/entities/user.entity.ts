@@ -1,7 +1,5 @@
-import { IsEmail, IsEnum } from 'class-validator';
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Sex } from 'src/helper/common/enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -9,7 +7,6 @@ export class User extends AbstractEntity {
     id: string;
 
     @Column()
-    @IsEmail()
     email: string;
 
     @Column()
@@ -25,6 +22,5 @@ export class User extends AbstractEntity {
     phoneNumber: string;
 
     @Column({ nullable: true })
-    @IsEnum(Sex)
     sex: string;
 }

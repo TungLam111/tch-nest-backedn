@@ -1,7 +1,5 @@
-import { IsEnum } from 'class-validator';
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { OrderStatus, OrderType } from 'src/helper/common/enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class Order extends AbstractEntity {
@@ -15,7 +13,6 @@ export class Order extends AbstractEntity {
     userId: string;
 
     @Column()
-    @IsEnum(OrderType)
     orderType: string;
 
     @Column()
@@ -28,8 +25,7 @@ export class Order extends AbstractEntity {
     couponId: string;
 
     @Column()
-    @IsEnum(OrderStatus)
-    status: string;
+    status: string; // OrderStatus
 
     @Column()
     paymentMethodId: string;

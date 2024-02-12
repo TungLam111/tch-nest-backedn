@@ -1,5 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
 export class Product extends AbstractEntity {
@@ -14,5 +14,8 @@ export class Product extends AbstractEntity {
 
     @Column()
     description: string;
+
+    @Column()
+    basePrice: number;
 }
 

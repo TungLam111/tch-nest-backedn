@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from './core/config/database/database';
 import { CouponModule } from './modules/coupon/coupon.module';
+import { MenuModule } from './modules/menu/menu.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
 import { SettingModule } from './modules/setting/setting.module';
@@ -15,6 +16,7 @@ import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       validationSchema: Joi.object({
         POSTGRES_HOST: Joi.string().required(),
         POSTGRES_PORT: Joi.number().required(),
@@ -29,7 +31,15 @@ import { UserModule } from './modules/user/user.module';
         return databaseConfig;
       },
     }),
-    SettingModule, UserModule, OrderModule, StoreModule, ProductModule, CouponModule, StoreModule,],
+    SettingModule,
+    UserModule,
+    OrderModule,
+    StoreModule,
+    ProductModule,
+    CouponModule,
+    StoreModule,
+    MenuModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

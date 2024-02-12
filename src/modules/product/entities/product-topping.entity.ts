@@ -1,5 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from '../../../helper/common/common_entity';
 import { Product } from './product.entity';
 import { Topping } from './topping.entity';
 

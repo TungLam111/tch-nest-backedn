@@ -1,6 +1,6 @@
-import { AbstractEntity } from "src/helper/common/common_entity";
-import { Product } from "src/modules/product/entities/product.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AbstractEntity } from "../../../helper/common/common_entity";
+import { Product } from "../../product/entities/product.entity";
 import { Menu } from "./menu.entity";
 
 @Entity()
