@@ -15,7 +15,7 @@ export class User extends AbstractEntity {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ nullable: true })
     dob: string;
 
     @Column({ nullable: true })

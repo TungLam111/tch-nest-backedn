@@ -7,9 +7,9 @@ import { Order } from '../../../modules/order/entities/order.entity';
 import { PaymentMethod } from '../../../modules/payment-method/entities/payment-method.entity';
 import { ProductTopping } from '../../../modules/product/entities/product-topping.entity';
 import { Product } from '../../../modules/product/entities/product.entity';
-import { ToppingOption } from '../../../modules/product/entities/topping-option.entity';
-import { Topping } from '../../../modules/product/entities/topping.entity';
 import { Store } from '../../../modules/store/entities/store.entity';
+import { ToppingOption } from '../../../modules/topping/entities/topping-option.entity';
+import { Topping } from '../../../modules/topping/entities/topping.entity';
 import { User } from '../../../modules/user/entities/user.entity';
 
 const databaseConfig: DataSourceOptions = {

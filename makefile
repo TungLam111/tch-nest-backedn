@@ -10,7 +10,7 @@ migrate-add:
 	if [ -d "dist" ]; then \
 		rm -rf "dist"; \
 		echo "Directory dist removed."; \
-	fi
+	fi 
 	yarn run add:migration $(MIGRATE_NAME)
 	@bash bash/copy-migration-file.sh $(MIGRATE_NAME)
 

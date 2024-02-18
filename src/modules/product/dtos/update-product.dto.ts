@@ -1,10 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateProductDto {
+export class UpdateProductDto {
     @ApiProperty()
+    id: string;
+
+    @ApiProperty({ nullable: true })
     name: string;
 
-    @ApiProperty()
+    @ApiProperty({ nullable: true })
     description: string;
 
     @ApiProperty({ nullable: true })
@@ -13,6 +16,6 @@ export class CreateProductDto {
     @ApiProperty({ nullable: true })
     basePrice: number
 
-    @ApiProperty({ nullable: true })
+    @ApiProperty({ nullable: true, default: [] })
     toppings: string[]
 }

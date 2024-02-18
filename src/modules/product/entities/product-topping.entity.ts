@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from '../../../helper/common/common_entity';
+import { Topping } from '../../topping/entities/topping.entity';
 import { Product } from './product.entity';
-import { Topping } from './topping.entity';
 
 
 @Entity()

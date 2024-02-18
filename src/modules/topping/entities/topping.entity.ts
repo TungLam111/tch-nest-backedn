@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from '../../../helper/common/common_entity';
+import { ToppingOption } from './topping-option.entity';
 
 @Entity()
 export class Topping extends AbstractEntity {
@@ -23,4 +24,8 @@ export class Topping extends AbstractEntity {
 
     @Column()
     minSelect: number;
+
+    @OneToMany(() => ToppingOption, toppingOption => toppingOption.topping)
+    @JoinColumn({ name: 'id', referencedColumnName: 'toppingId' })
+    options: ToppingOption[];
 }

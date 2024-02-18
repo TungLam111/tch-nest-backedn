@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { MenuProduct } from 'src/modules/menu/entities/menu-product.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from '../../../helper/common/common_entity';
 
 @Entity()
@@ -17,5 +18,8 @@ export class Product extends AbstractEntity {
 
     @Column()
     basePrice: number;
+
+    @OneToMany(() => MenuProduct, menuProduct => menuProduct.product)
+    menuProducts: MenuProduct[];
 }
 

@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from '../../../helper/common/common_entity';
+import { MenuProduct } from './menu-product.entity';
 
 @Entity()
 export class Menu extends AbstractEntity {
@@ -14,4 +15,7 @@ export class Menu extends AbstractEntity {
 
     @Column()
     description: string;
+
+    @OneToMany(() => MenuProduct, menuProduct => menuProduct.menu)
+    menuProducts: MenuProduct[];
 }
