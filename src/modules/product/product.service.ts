@@ -426,4 +426,20 @@ export class ProductService {
             }
         }
     }
+
+    async findOne(productId: string): Promise<Product> {
+        try {
+            const product = this.productRepository.findOne({
+                where: {
+                    isDeleted: false,
+                    id: productId,
+                }
+            })
+
+            return product;
+        } catch (error) {
+            this.logger.error(error)
+            return null
+        }
+    }
 }

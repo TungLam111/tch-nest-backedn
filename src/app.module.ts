@@ -7,8 +7,10 @@ import { AppService } from './app.service';
 import databaseConfig from './core/config/database/database';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
+import { RatingModule } from './modules/rating/rating.module';
 import { SettingModule } from './modules/setting/setting.module';
 import { StoreModule } from './modules/store/store.module';
 import { ToppingModule } from './modules/topping/topping.module';
@@ -41,6 +43,8 @@ import { UserModule } from './modules/user/user.module';
     StoreModule,
     MenuModule,
     ToppingModule,
+    RatingModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

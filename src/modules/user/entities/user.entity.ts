@@ -23,4 +23,7 @@ export class User extends AbstractEntity {
 
     @Column({ nullable: true })
     sex: string;
+
+    @Column({ nullable: true })
+    likeProducts: string;
 }

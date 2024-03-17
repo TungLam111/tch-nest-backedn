@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { TchNotification } from 'src/modules/notification/entities/notification.entity';
 import { DataSourceOptions } from 'typeorm';
 import { MenuProduct } from '../../../modules/menu/entities/menu-product.entity';
 import { Menu } from '../../../modules/menu/entities/menu.entity';
@@ -29,6 +30,7 @@ const databaseConfig: DataSourceOptions = {
         Topping,
         ToppingOption,
         User,
+        TchNotification,
     ],
     migrations: [
         '../../core/config/migrations/*{.ts,.js}'

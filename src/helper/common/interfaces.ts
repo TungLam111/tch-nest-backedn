@@ -1,5 +1,11 @@
 import { HttpStatus } from "@nestjs/common";
 
+import { Request } from 'express';
+import { User } from "src/modules/user/entities/user.entity";
+
+export interface AuthenticatedRequest extends Request {
+    user: User; // Replace 'any' with the actual type of your user object if possible
+}
 export class ApiResponse {
     status: HttpStatus;
     content: any;

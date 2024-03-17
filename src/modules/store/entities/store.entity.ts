@@ -27,6 +27,6 @@ export class Store extends AbstractEntity {
     @Column()
     timeSchedule: string;
 
-    @Column()
+    @Column({ nullable: true })
     images: string; // list
 }
