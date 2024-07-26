@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { TchNotification } from 'src/modules/notification/entities/notification.entity';
 import { DataSourceOptions } from 'typeorm';
 import { MenuProduct } from '../../../modules/menu/entities/menu-product.entity';
@@ -14,31 +15,30 @@ import { Topping } from '../../../modules/topping/entities/topping.entity';
 import { User } from '../../../modules/user/entities/user.entity';
 
 const databaseConfig: DataSourceOptions = {
-    type: 'postgres',
-    host: process.env.POSTGRES_HOST,
-    port: +process.env.POSTGRES_PORT,
-    database: process.env.POSTGRES_DB,
-    entities: [
-        Menu,
-        MenuProduct,
-        Order,
-        OrderProduct,
-        PaymentMethod,
-        Product,
-        ProductTopping,
-        Store,
-        Topping,
-        ToppingOption,
-        User,
-        TchNotification,
-    ],
-    migrations: [
-        '../../core/config/migrations/*{.ts,.js}'
-    ],
-    synchronize: false,
-    dropSchema: false,
-    migrationsRun: false,
-    logging: true,
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST,
+  port: +process.env.POSTGRES_PORT,
+  database: process.env.POSTGRES_DB,
+  entities: [
+    Menu,
+    MenuProduct,
+    Order,
+    OrderProduct,
+    PaymentMethod,
+    Product,
+    ProductTopping,
+    Store,
+    Topping,
+    ToppingOption,
+    User,
+    TchNotification,
+    Feedback,
+  ],
+  migrations: ['../../core/config/migrations/*{.ts,.js}'],
+  synchronize: false,
+  dropSchema: false,
+  migrationsRun: false,
+  logging: true,
 };
 
 export default databaseConfig;

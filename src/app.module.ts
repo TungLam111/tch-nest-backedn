@@ -5,7 +5,9 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from './core/config/database/database';
+import { AuthModule } from './modules/auth/auth.module';
 import { CouponModule } from './modules/coupon/coupon.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
@@ -25,7 +27,7 @@ import { UserModule } from './modules/user/user.module';
         POSTGRES_PORT: Joi.number().required(),
         POSTGRES_DB: Joi.string().required(),
         POSTGRES_SSL: Joi.boolean().required(),
-      })
+      }),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -45,8 +47,10 @@ import { UserModule } from './modules/user/user.module';
     ToppingModule,
     RatingModule,
     NotificationModule,
+    FeedbackModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

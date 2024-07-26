@@ -16,3 +16,5 @@ migrate-add:
 
 migrate-apply:
 	yarn run apply:migration
+
+# CreateUsersTable

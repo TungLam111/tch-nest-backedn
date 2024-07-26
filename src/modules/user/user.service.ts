@@ -1,167 +1,180 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FunctionError } from 'src/helper/common/error_app';
+import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
-import { ApiResponse, ResponseData } from '../../helper/common/interfaces';
+import { ApiResponse } from '../../helper/common/interfaces';
+import {
+  CreateAccountRequestDto,
+  LoginRequestDto,
+} from '../auth/dtos/login-request.dto';
 import { Product } from '../product/entities/product.entity';
 import { ProductService } from '../product/product.service';
 import { User } from './entities/user.entity';
 
 @Injectable()
-export class UserService {
-    constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
-        @InjectRepository(Product) private readonly productRepository: Repository<Product>,
+export class UserService extends SharedService {
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    private productService: ProductService,
+    private readonly jwtService: JwtService,
+  ) {
+    super(UserService.name);
+  }
 
-        private productService: ProductService,
-    ) { }
+  async verifyAccount(req: LoginRequestDto): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      const findUser = await this.userRepository.findOne({
+        where: {
+          password: req.password,
+          email: req.email,
+        },
+      });
 
-    private logger = new Logger(UserService.name);
+      if (!findUser || findUser === undefined) {
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'User not found');
+      }
+      return {
+        access_token: await this.generateAccessToken(
+          findUser.id,
+          findUser.email,
+        ),
+        refresh_token: await this.generateRefreshToken(
+          findUser.id,
+          findUser.email,
+        ),
+      };
+    });
+  }
 
-    async getRecentProducts(userId: string): Promise<ApiResponse> {
-        const responseData = new ResponseData();
-        try {
-            return {
-                status: HttpStatus.OK,
-                content: responseData,
-            }
-        } catch (e) {
-            this.logger.error(e)
-            return {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                content: null
-            }
-        }
-    }
+  async createAccount(req: CreateAccountRequestDto): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      const findUser = await this.userRepository.findOne({
+        where: {
+          email: req.email,
+        },
+      });
 
-    async likeProduct(user: User, productId: string): Promise<ApiResponse> {
-        const responseData = new ResponseData();
-        try {
-            const productCheck = await this.productService.findOne(productId)
-            if (!productCheck) {
-                return {
-                    status: HttpStatus.BAD_REQUEST,
-                    content: responseData,
-                }
-            }
+      if (findUser || findUser === undefined) {
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'User already exists');
+      }
 
-            let likeProducts: string[];
-            if (!user.likeProducts) {
-                likeProducts = []
-            } else {
-                likeProducts = JSON.parse(user.likeProducts)
-            }
-            likeProducts.push(productCheck.id)
+      const createUser = await this.userRepository.save({
+        email: req.email,
+        password: req.password,
+        phoneNumber: req.phoneNumber,
+        name: req.name,
+      });
 
-            let updateUser: User = {
-                ...user,
-                likeProducts: JSON.stringify(likeProducts)
-            }
+      if (!createUser) {
+        throw new FunctionError(HttpStatus.INTERNAL_SERVER_ERROR, null);
+      }
 
-            updateUser = await this.userRepository.save(updateUser)
-            if (!updateUser) {
-                return {
-                    status: HttpStatus.BAD_REQUEST,
-                    content: responseData
-                }
-            }
+      console.log(JSON.stringify(createUser));
 
-            responseData.hasError = false
-            return {
-                status: HttpStatus.OK,
-                content: responseData,
-            }
-        } catch (e) {
-            this.logger.error(e)
-            return {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                content: null
-            }
-        }
-    }
+      return createUser;
+    });
+  }
 
+  async getRecentProducts(userId: string): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      return [];
+    });
+  }
 
-    async unlikeProduct(user: User, productId: string): Promise<ApiResponse> {
-        const responseData = new ResponseData();
-        try {
-            const productCheck = await this.productService.findOne(productId)
-            if (!productCheck) {
-                return {
-                    status: HttpStatus.BAD_REQUEST,
-                    content: responseData,
-                }
-            }
+  async likeProduct(user: User, productId: string): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      const productCheck = await this.productService.findOne(productId);
+      if (!productCheck) {
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'Cannot find product');
+      }
 
-            let likeProducts: string[];
-            if (!user.likeProducts) {
-                return {
-                    status: HttpStatus.BAD_REQUEST,
-                    content: responseData,
-                }
-            } else {
-                likeProducts = JSON.parse(user.likeProducts)
-            }
-            likeProducts = likeProducts.filter((p) => p != productCheck.id)
+      let likeProducts: string[];
+      if (!user.likeProducts) {
+        likeProducts = [];
+      } else {
+        likeProducts = JSON.parse(user.likeProducts);
+      }
+      likeProducts.push(productCheck.id);
 
-            let updateUser: User = {
-                ...user,
-                likeProducts: JSON.stringify(likeProducts)
-            }
+      let updateUser: User = {
+        ...user,
+        likeProducts: JSON.stringify(likeProducts),
+      };
 
-            updateUser = await this.userRepository.save(updateUser)
-            if (!updateUser) {
-                return {
-                    status: HttpStatus.BAD_REQUEST,
-                    content: responseData
-                }
-            }
+      updateUser = await this.userRepository.save(updateUser);
+      if (!updateUser) {
+        throw new FunctionError(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          'Fail to update like product',
+        );
+      }
+      return updateUser;
+    });
+  }
 
-            responseData.hasError = false
-            return {
-                status: HttpStatus.OK,
-                content: responseData,
-            }
-        } catch (e) {
-            this.logger.error(e)
-            return {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                content: null
-            }
-        }
-    }
+  async unlikeProduct(user: User, productId: string): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      const productCheck = await this.productService.findOne(productId);
+      if (!productCheck) {
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'Cannot find product');
+      }
 
-    async getLikedProducts(user: User): Promise<ApiResponse> {
-        const responseData = new ResponseData();
-        try {
-            let productIds = user.likeProducts;
-            if (!productIds || productIds.length === 0) {
-                responseData.hasError = false
-                responseData.appData = []
-                return {
-                    status: HttpStatus.OK,
-                    content: responseData,
-                }
-            }
+      let likeProducts: string[];
+      if (!user.likeProducts) {
+        throw new FunctionError(HttpStatus.BAD_REQUEST, '');
+      } else {
+        likeProducts = JSON.parse(user.likeProducts);
+      }
+      likeProducts = likeProducts.filter((p) => p != productCheck.id);
 
-            const products = await this.productRepository
-                .createQueryBuilder('product')
-                .where('product.id IN (:...ids)', {
-                    ids: productIds || [],
-                })
-                .andWhere('product.isDeleted = false')
-                .getMany()
+      let updateUser: User = {
+        ...user,
+        likeProducts: JSON.stringify(likeProducts),
+      };
 
-            responseData.hasError = false
-            responseData.appData = products
-            return {
-                status: HttpStatus.OK,
-                content: responseData,
-            }
-        } catch (e) {
-            this.logger.error(e)
-            return {
-                status: HttpStatus.INTERNAL_SERVER_ERROR,
-                content: null
-            }
-        }
-    }
+      updateUser = await this.userRepository.save(updateUser);
+      if (!updateUser) {
+        throw new FunctionError(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          'Fail to update like product',
+        );
+      }
+      return updateUser;
+    });
+  }
+
+  async getLikedProducts(user: User): Promise<ApiResponse> {
+    return this.handleRequest(async () => {
+      let productIds = user.likeProducts;
+      if (!productIds || productIds.length === 0) {
+        return [];
+      }
+
+      const products = await this.productRepository
+        .createQueryBuilder('product')
+        .where('product.id IN (:...ids)', {
+          ids: productIds || [],
+        })
+        .andWhere('product.isDeleted = false')
+        .getMany();
+      return products;
+    });
+  }
+
+  async generateAccessToken(userId: string, email: string): Promise<string> {
+    const payload = { sub: userId, email };
+    return this.jwtService.sign(payload);
+  }
+
+  async generateRefreshToken(userId: string, email: string): Promise<string> {
+    const payload = { sub: userId, email };
+    return this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: '7d',
+    });
+  }
 }
