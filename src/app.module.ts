@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from './core/config/database/database';
 import { AuthModule } from './modules/auth/auth.module';
+import { BasketModule } from './modules/basket/basket.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { MenuModule } from './modules/menu/menu.module';
@@ -49,6 +50,7 @@ import { UserModule } from './modules/user/user.module';
     NotificationModule,
     FeedbackModule,
     AuthModule,
+    BasketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { Basket } from 'src/modules/basket/entities/basket.entity';
 import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { TchNotification } from 'src/modules/notification/entities/notification.entity';
 import { DataSourceOptions } from 'typeorm';
@@ -33,6 +34,7 @@ const databaseConfig: DataSourceOptions = {
     User,
     TchNotification,
     Feedback,
+    Basket,
   ],
   migrations: ['../../core/config/migrations/*{.ts,.js}'],
   synchronize: false,
