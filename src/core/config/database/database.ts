@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Basket } from 'src/modules/basket/entities/basket.entity';
 import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { TchNotification } from 'src/modules/notification/entities/notification.entity';
+import { PaymentCard } from 'src/modules/payment-card/entities/payment-card.entity';
 import { DataSourceOptions } from 'typeorm';
 import { MenuProduct } from '../../../modules/menu/entities/menu-product.entity';
 import { Menu } from '../../../modules/menu/entities/menu.entity';
@@ -35,6 +36,7 @@ const databaseConfig: DataSourceOptions = {
     TchNotification,
     Feedback,
     Basket,
+    PaymentCard,
   ],
   migrations: ['../../core/config/migrations/*{.ts,.js}'],
   synchronize: false,

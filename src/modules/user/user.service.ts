@@ -25,6 +25,15 @@ export class UserService extends SharedService {
     super(UserService.name);
   }
 
+  async getUser(userId: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        isDeleted: false,
+        id: userId,
+      },
+    });
+  }
+
   async verifyAccount(req: LoginRequestDto): Promise<ApiResponse> {
     return this.handleRequest(async () => {
       const findUser = await this.userRepository.findOne({

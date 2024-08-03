@@ -16,8 +16,8 @@ export class Basket extends AbstractEntity {
   @Column()
   mealId: string;
 
-  @Column()
-  quantity: string;
+  @Column({ nullable: true })
+  quantity: number;
 
   @Column()
   price: string;
@@ -27,6 +27,15 @@ export class Basket extends AbstractEntity {
 
   @Column()
   userId: String;
+
+  @Column({ nullable: true })
+  mealCategory: String;
+
+  @Column({ nullable: true })
+  mealName: String;
+
+  @Column({ nullable: true })
+  mealImage: String;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })

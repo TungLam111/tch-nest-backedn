@@ -9,7 +9,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { AuthenticatedRequest } from 'src/helper/common/interfaces';
+import { AuthenticatedRoleRequest } from 'src/core/middleware/auth-user';
 import { BasketService } from './basket.service';
 import { AddBasketDTO, UpdateBasketDTO } from './dtos/request.dto';
 
@@ -18,43 +18,48 @@ export class BasketController {
   constructor(private basketService: BasketService) {}
 
   @Get()
-  async getAll(@Res() res: any, @Req() req: AuthenticatedRequest) {
-    const result = await this.basketService.getAllBasketItems(req.user.id);
+  async getAll(@Res() res: any, @Req() req: AuthenticatedRoleRequest) {
+    const result = await this.basketService.getAllBasketItems(req.user.user.id);
     res.status(result.status).json(result.content);
   }
 
   @Get(':id')
   async getOne(
     @Res() res: any,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRoleRequest,
     @Param('id') basketId: string,
   ) {
     const result = await this.basketService.getOneBasketItem(
-      req.user.id,
+      req.user.user.id,
       basketId,
     );
+
+    console.log(JSON.stringify(result.content));
     res.status(result.status).json(result.content);
   }
 
   @Post()
   async addOne(
     @Res() res: any,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRoleRequest,
     @Body() requestDto: AddBasketDTO,
   ) {
-    const result = await this.basketService.addOne(req.user.id, requestDto);
+    const result = await this.basketService.addOne(
+      req.user.user.id,
+      requestDto,
+    );
     res.status(result.status).json(result.content);
   }
 
   @Put(':id')
   async updateOne(
     @Res() res: any,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRoleRequest,
     @Param('id') basketId: string,
     @Body() requestDto: UpdateBasketDTO,
   ) {
     const result = await this.basketService.updateOne(
-      req.user.id,
+      req.user.user.id,
       basketId,
       requestDto,
     );
@@ -64,10 +69,13 @@ export class BasketController {
   @Delete(':id')
   async deleteOne(
     @Res() res: any,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRoleRequest,
     @Param('id') basketId: string,
   ) {
-    const result = await this.basketService.deleteOne(req.user.id, basketId);
+    const result = await this.basketService.deleteOne(
+      req.user.user.id,
+      basketId,
+    );
     res.status(result.status).json(result.content);
   }
 }

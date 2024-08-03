@@ -1,0 +1,33 @@
+payment-card:
+  entity: PaymentCard
+  fields:
+    userId: string
+    cardHolderName: string
+    cardNumber: string
+    cardType: string
+    expirationDate: Date
+    startDate: Date
+
+order:
+  entity: Order
+  fields:
+    orderCode: string
+    userId: string
+    orderType: string
+    totalAmount: number
+    quantity: number
+    couponId: string 
+    status: string 
+    paymentMethodId: string 
+    discountAmount: number 
+    note: string 
+    orderRatingId: string 
+    timeDelivery: Date 
+    timeComplete: Date 
+    isCancel: boolean 
+    cancelReason: string 
+    shipFee: number 
+    shipAddress: string 
+    shipCoordinates: string
+
+

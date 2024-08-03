@@ -7,6 +7,13 @@ import { Repository } from 'typeorm';
 import { AddBasketDTO, UpdateBasketDTO } from './dtos/request.dto';
 import { Basket } from './entities/basket.entity';
 
+export class BasketListResponseDto {
+  results: Basket[];
+  foodPrice: number;
+  totalPrice: number;
+  deliveryPrice: number;
+}
+
 @Injectable()
 export class BasketService extends SharedService {
   constructor(
@@ -17,14 +24,47 @@ export class BasketService extends SharedService {
   }
 
   async getAllBasketItems(userId: string): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+    return this.handleRequest<BasketListResponseDto>(async () => {
       const baskets = await this.basketRepository.find({
         where: {
           isDeleted: false,
           userId: userId,
         },
+        order: {
+          createdAt: 'DESC',
+        },
       });
-      return baskets;
+
+      if (baskets !== undefined && baskets !== null) {
+        let basketList = baskets.map(
+          (e) =>
+            <Basket>{
+              id: e.id,
+              mealId: e.mealId,
+              quantity: e.quantity,
+              price: e.price,
+              topping: JSON.parse(e.topping),
+              userId: e.userId,
+              mealCategory: e.mealCategory,
+              mealName: e.mealName,
+              mealImage: e.mealImage,
+              createdAt: e.createdAt,
+            },
+        );
+        let foodPrice = 0;
+        basketList.forEach((e) => {
+          foodPrice += +(e.price ?? 0) * e.quantity;
+        });
+        let discountPrice = 1;
+        let deliveryPrice = 2;
+        return {
+          results: basketList,
+          foodPrice: foodPrice,
+          totalPrice: foodPrice + deliveryPrice - discountPrice,
+          deliveryPrice: deliveryPrice,
+        };
+      }
+      return { results: [], foodPrice: 0, totalPrice: 0, deliveryPrice: 0 };
     });
   }
 
@@ -42,7 +82,18 @@ export class BasketService extends SharedService {
       });
 
       if (basket !== null && basket !== undefined) {
-        return basket;
+        return <Basket>{
+          id: basket.id,
+          mealId: basket.mealId,
+          quantity: basket.quantity,
+          price: basket.price,
+          topping: JSON.parse(basket.topping),
+          userId: basket.userId,
+          mealCategory: basket.mealCategory,
+          mealName: basket.mealName,
+          mealImage: basket.mealImage,
+          createdAt: basket.createdAt,
+        };
       }
 
       throw new FunctionError(HttpStatus.BAD_REQUEST, 'Basket not found');
@@ -78,7 +129,10 @@ export class BasketService extends SharedService {
       newBasket.mealId = dto.mealId;
       newBasket.quantity = dto.quantity;
       newBasket.price = dto.price;
-      newBasket.topping = dto.topping;
+      newBasket.topping = JSON.stringify(dto.topping);
+      newBasket.mealCategory = dto.mealCategory;
+      newBasket.mealImage = dto.mealImage;
+      newBasket.mealName = dto.mealName;
 
       const addedBasket = await this.basketRepository.save(newBasket);
 
@@ -112,6 +166,10 @@ export class BasketService extends SharedService {
         price: dto.price,
         quantity: dto.quantity,
         topping: dto.topping,
+
+        mealCategory: dto.mealCategory,
+        mealImage: dto.mealImage,
+        mealName: dto.mealName,
       });
 
       if (updatedBasket !== undefined && updatedBasket !== null) {
