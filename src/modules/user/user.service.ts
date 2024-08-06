@@ -34,7 +34,12 @@ export class UserService extends SharedService {
     });
   }
 
-  async verifyAccount(req: LoginRequestDto): Promise<ApiResponse> {
+  async verifyAccount(req: LoginRequestDto): Promise<
+    ApiResponse<{
+      access_token: string;
+      refresh_token: string;
+    }>
+  > {
     return this.handleRequest(async () => {
       const findUser = await this.userRepository.findOne({
         where: {
@@ -59,7 +64,9 @@ export class UserService extends SharedService {
     });
   }
 
-  async createAccount(req: CreateAccountRequestDto): Promise<ApiResponse> {
+  async createAccount(
+    req: CreateAccountRequestDto,
+  ): Promise<ApiResponse<User>> {
     return this.handleRequest(async () => {
       const findUser = await this.userRepository.findOne({
         where: {
@@ -82,19 +89,17 @@ export class UserService extends SharedService {
         throw new FunctionError(HttpStatus.INTERNAL_SERVER_ERROR, null);
       }
 
-      console.log(JSON.stringify(createUser));
-
       return createUser;
     });
   }
 
-  async getRecentProducts(userId: string): Promise<ApiResponse> {
+  async getRecentProducts(userId: string): Promise<ApiResponse<Product[]>> {
     return this.handleRequest(async () => {
       return [];
     });
   }
 
-  async likeProduct(user: User, productId: string): Promise<ApiResponse> {
+  async likeProduct(user: User, productId: string): Promise<ApiResponse<User>> {
     return this.handleRequest(async () => {
       const productCheck = await this.productService.findOne(productId);
       if (!productCheck) {
@@ -125,8 +130,11 @@ export class UserService extends SharedService {
     });
   }
 
-  async unlikeProduct(user: User, productId: string): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  async unlikeProduct(
+    user: User,
+    productId: string,
+  ): Promise<ApiResponse<User>> {
+    return this.handleRequest<User>(async () => {
       const productCheck = await this.productService.findOne(productId);
       if (!productCheck) {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Cannot find product');
@@ -156,8 +164,8 @@ export class UserService extends SharedService {
     });
   }
 
-  async getLikedProducts(user: User): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  async getLikedProducts(user: User): Promise<ApiResponse<Product[]>> {
+    return this.handleRequest<Product[]>(async () => {
       let productIds = user.likeProducts;
       if (!productIds || productIds.length === 0) {
         return [];

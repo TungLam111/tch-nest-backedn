@@ -13,7 +13,7 @@ export class PaymentMethodService extends SharedService {
   ) {
     super(PaymentMethodService.name);
   }
-  async getAll(): Promise<ApiResponse> {
+  async getAll(): Promise<ApiResponse<any>> {
     return this.handleRequest<
       {
         id: string;

@@ -20,8 +20,25 @@ write_to_file() {
     echo "" >> "$entity_file"
 
     for i in "${!fields[@]}"; do
-        echo "  @Column()" >> "$entity_file"
-        echo "  ${fields[$i]}: ${types[$i]};" >> "$entity_file"
+        IFS='|' read -ra type_parts <<< "${types[$i]}"
+
+        # Trim spaces from each part
+        trimmed_parts=()
+        for part in "${type_parts[@]}"; do
+            # Use xargs to trim leading and trailing whitespace
+            trimmed_parts+=("$(echo -n "$part" | xargs)")
+        done
+        
+        # Check if 'nullable' is in the trimmed parts
+        if [[ " ${trimmed_parts[@]} " =~ " nullable " ]]; then
+            # If 'nullable' is found, set the column as nullable
+            echo "  @Column({ nullable: true })" >> "$entity_file"
+        else
+            # Otherwise, use the normal column definition
+            echo "  @Column()" >> "$entity_file"
+        fi
+    
+        echo "  ${fields[$i]}: ${trimmed_parts[0]};" >> "$entity_file"
         echo "" >> "$entity_file"
     done
 
@@ -30,18 +47,72 @@ write_to_file() {
     # Append CreateInput and UpdateInput functions
     createInput=""
     for i in "${!fields[@]}"; do
-        createInput+="${fields[$i]}: ${types[$i]}, "
+        # Split the current type by '|'
+        IFS='|' read -ra type_parts <<< "${types[$i]}"
+        
+        # Trim spaces from each part and check if 'nullable' is present
+        is_nullable=false
+        primary_type=""
+        
+        for part in "${type_parts[@]}"; do
+            # Trim leading and trailing whitespace using xargs
+            trimmed_part="$(echo -n "$part" | xargs)"
+            
+            if [[ "$trimmed_part" == "nullable" ]]; then
+                is_nullable=true
+            else
+                primary_type="$trimmed_part"
+            fi
+        done
+        
+        # Construct the input field definition
+        if $is_nullable; then
+            createInput+="${fields[$i]}: ${primary_type} | null, "
+        else
+            createInput+="${fields[$i]}: ${primary_type}, "
+        fi
     done
+
     # Remove the trailing comma and space
+    createInput="${createInput%, }"  # Trim the last comma and space
+
+    # Wrap the createInput in curly braces
     createInput="{
         $createInput
     }"
 
     updateInput=""
     for i in "${!fields[@]}"; do
-        updateInput+="${fields[$i]}: ${types[$i]}, "
+        # Split the current type by '|'
+        IFS='|' read -ra type_parts <<< "${types[$i]}"
+        
+        # Trim spaces from each part and check if 'nullable' is present
+        is_nullable=false
+        primary_type=""
+        
+        for part in "${type_parts[@]}"; do
+            # Trim leading and trailing whitespace using xargs
+            trimmed_part="$(echo -n "$part" | xargs)"
+            
+            if [[ "$trimmed_part" == "nullable" ]]; then
+                is_nullable=true
+            else
+                primary_type="$trimmed_part"
+            fi
+        done
+        
+        # Construct the input field definition
+        if $is_nullable; then
+            updateInput+="${fields[$i]}: ${primary_type} | null, "
+        else
+            updateInput+="${fields[$i]}: ${primary_type}, "
+        fi
     done
+    
     # Remove the trailing comma and space
+    updateInput="${updateInput%, }"  # Trim the last comma and space
+
+    # Wrap the updateInput in curly braces
     updateInput="{
         $updateInput
     }"

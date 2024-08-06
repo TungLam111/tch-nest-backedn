@@ -26,16 +26,16 @@ export class Basket extends AbstractEntity {
   topping: string;
 
   @Column()
-  userId: String;
+  userId: string;
 
   @Column({ nullable: true })
-  mealCategory: String;
+  mealCategory: string;
 
   @Column({ nullable: true })
-  mealName: String;
+  mealName: string;
 
   @Column({ nullable: true })
-  mealImage: String;
+  mealImage: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })

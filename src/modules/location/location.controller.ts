@@ -54,14 +54,16 @@ export class LocationController {
   }
 
   // Update location by user
-  @Put()
+  @Put(':id')
   async updateLocation(
     @Res() res: any,
     @Req() req: AuthenticatedRoleRequest,
+    @Param('id') locationId: string,
     @Body() updateLocationDto: UpdateLocationDto,
   ) {
     const result = await this.locationService.updateLocation(
       req.user.user,
+      locationId,
       updateLocationDto,
     );
     res.status(result.status).json(result.content);

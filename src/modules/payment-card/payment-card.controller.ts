@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
   Req,
   Res,
 } from '@nestjs/common';
@@ -24,7 +24,7 @@ export class PaymentCardController {
     res.status(result.status).json(result.content);
   }
 
-  @Get('/:id')
+  @Get(':id')
   async getOne(
     @Res() res: any,
     @Param('id') id: string,
@@ -47,17 +47,22 @@ export class PaymentCardController {
     res.status(result.status).json(result.content);
   }
 
-  @Patch()
+  @Put(':id')
   async update(
     @Res() res: any,
+    @Param('id') cardId: string,
     @Body() dto: UpdatePaymentCardDto,
     @Req() req: AuthenticatedRoleRequest,
   ) {
-    const result = await this.paymentCardService.update(req.user.user.id, dto);
+    const result = await this.paymentCardService.update(
+      req.user.user.id,
+      cardId,
+      dto,
+    );
     res.status(result.status).json(result.content);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   async delete(
     @Res() res: any,
     @Param('id') id: string,

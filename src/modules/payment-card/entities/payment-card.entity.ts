@@ -23,11 +23,17 @@ export class PaymentCard extends AbstractEntity {
   @Column()
   startDate: Date;
 
+  @Column({ nullable: true })
+  issueNumber: string;
+
+  @Column({ nullable: true })
+  billingAddressID: string;
+
 }
 
 
 export function PaymentCardCreateInput(createPaymentCardDto: {
-        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, 
+        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, issueNumber: string | null, billingAddressID: string | null
     }): PaymentCard {
   const createDto: PaymentCard = new PaymentCard();
     createDto.userId = createPaymentCardDto.userId;
@@ -36,11 +42,13 @@ export function PaymentCardCreateInput(createPaymentCardDto: {
   createDto.cardType = createPaymentCardDto.cardType;
   createDto.expirationDate = createPaymentCardDto.expirationDate;
   createDto.startDate = createPaymentCardDto.startDate;
+  createDto.issueNumber = createPaymentCardDto.issueNumber;
+  createDto.billingAddressID = createPaymentCardDto.billingAddressID;
   return createDto;
 }
 
 export function PaymentCardUpdateInput(currentPaymentCard: PaymentCard, updatePaymentCardDto: {
-        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, 
+        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, issueNumber: string | null, billingAddressID: string | null
     }): PaymentCard {
   return {
     ...currentPaymentCard,
@@ -50,6 +58,8 @@ export function PaymentCardUpdateInput(currentPaymentCard: PaymentCard, updatePa
     cardType: updatePaymentCardDto.cardType,
     expirationDate: updatePaymentCardDto.expirationDate,
     startDate: updatePaymentCardDto.startDate,
+    issueNumber: updatePaymentCardDto.issueNumber,
+    billingAddressID: updatePaymentCardDto.billingAddressID,
   };
 }
 

@@ -6,10 +6,10 @@ export class Order extends AbstractEntity {
   id: string;
 
   @Column()
-  orderCode: string;
+  userId: string;
 
   @Column()
-  userId: string;
+  orderCode: string;
 
   @Column()
   orderType: string;
@@ -20,34 +20,37 @@ export class Order extends AbstractEntity {
   @Column()
   quantity: number;
 
-  @Column()
+  @Column({ nullable: true })
   couponId: string;
 
   @Column()
   status: string;
 
   @Column()
+  paymentCardId: string;
+
+  @Column()
   paymentMethodId: string;
 
-  @Column()
+  @Column({ nullable: true })
   discountAmount: number;
 
-  @Column()
+  @Column({ nullable: true })
   note: string;
 
-  @Column()
+  @Column({ nullable: true })
   orderRatingId: string;
 
   @Column()
   timeDelivery: Date;
 
-  @Column()
+  @Column({ nullable: true })
   timeComplete: Date;
 
   @Column()
   isCancel: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   cancelReason: string;
 
   @Column()
@@ -56,38 +59,44 @@ export class Order extends AbstractEntity {
   @Column()
   shipAddress: string;
 
-  @Column()
+  @Column({ nullable: true })
   shipCoordinates: string;
+
+  @Column({ nullable: true })
+  locationId: string;
 }
 
 export function OrderCreateInput(createOrderDto: {
-  orderCode: string;
   userId: string;
+  orderCode: string;
   orderType: string;
   totalAmount: number;
   quantity: number;
-  couponId: string;
+  couponId: string | null;
   status: string;
+  paymentCardId: string;
   paymentMethodId: string;
-  discountAmount: number;
-  note: string;
-  orderRatingId: string;
+  discountAmount: number | null;
+  note: string | null;
+  orderRatingId: string | null;
   timeDelivery: Date;
-  timeComplete: Date;
+  timeComplete: Date | null;
   isCancel: boolean;
-  cancelReason: string;
+  cancelReason: string | null;
   shipFee: number;
   shipAddress: string;
-  shipCoordinates: string;
+  shipCoordinates: string | null;
+  locationId: string | null;
 }): Order {
   const createDto: Order = new Order();
-  createDto.orderCode = createOrderDto.orderCode;
   createDto.userId = createOrderDto.userId;
+  createDto.orderCode = createOrderDto.orderCode;
   createDto.orderType = createOrderDto.orderType;
   createDto.totalAmount = createOrderDto.totalAmount;
   createDto.quantity = createOrderDto.quantity;
   createDto.couponId = createOrderDto.couponId;
   createDto.status = createOrderDto.status;
+  createDto.paymentCardId = createOrderDto.paymentCardId;
   createDto.paymentMethodId = createOrderDto.paymentMethodId;
   createDto.discountAmount = createOrderDto.discountAmount;
   createDto.note = createOrderDto.note;
@@ -99,41 +108,45 @@ export function OrderCreateInput(createOrderDto: {
   createDto.shipFee = createOrderDto.shipFee;
   createDto.shipAddress = createOrderDto.shipAddress;
   createDto.shipCoordinates = createOrderDto.shipCoordinates;
+  createDto.locationId = createOrderDto.locationId;
   return createDto;
 }
 
 export function OrderUpdateInput(
   currentOrder: Order,
   updateOrderDto: {
-    orderCode: string;
     userId: string;
+    orderCode: string;
     orderType: string;
     totalAmount: number;
     quantity: number;
-    couponId: string;
+    couponId: string | null;
     status: string;
+    paymentCardId: string;
     paymentMethodId: string;
-    discountAmount: number;
-    note: string;
-    orderRatingId: string;
+    discountAmount: number | null;
+    note: string | null;
+    orderRatingId: string | null;
     timeDelivery: Date;
-    timeComplete: Date;
+    timeComplete: Date | null;
     isCancel: boolean;
-    cancelReason: string;
+    cancelReason: string | null;
     shipFee: number;
     shipAddress: string;
-    shipCoordinates: string;
+    shipCoordinates: string | null;
+    locationId: string | null;
   },
 ): Order {
   return {
     ...currentOrder,
-    orderCode: updateOrderDto.orderCode,
     userId: updateOrderDto.userId,
+    orderCode: updateOrderDto.orderCode,
     orderType: updateOrderDto.orderType,
     totalAmount: updateOrderDto.totalAmount,
     quantity: updateOrderDto.quantity,
     couponId: updateOrderDto.couponId,
     status: updateOrderDto.status,
+    paymentCardId: updateOrderDto.paymentCardId,
     paymentMethodId: updateOrderDto.paymentMethodId,
     discountAmount: updateOrderDto.discountAmount,
     note: updateOrderDto.note,
@@ -145,5 +158,6 @@ export function OrderUpdateInput(
     shipFee: updateOrderDto.shipFee,
     shipAddress: updateOrderDto.shipAddress,
     shipCoordinates: updateOrderDto.shipCoordinates,
+    locationId: updateOrderDto.locationId,
   };
 }

@@ -1,15 +1,15 @@
 import { HttpStatus } from '@nestjs/common';
 
-export class ApiResponse {
+export class ApiResponse<T> {
   status: HttpStatus;
-  content: any;
+  content: ResponseData<T>;
 }
 
-export class ResponseData {
+export class ResponseData<T> {
   hasError: boolean = true;
   errorCode: string = '';
   message: string = '';
-  appData: any = null;
+  appData: T = null;
 }
 
 export class PaginationParam {

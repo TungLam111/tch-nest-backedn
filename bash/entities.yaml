@@ -7,27 +7,43 @@ payment-card:
     cardType: string
     expirationDate: Date
     startDate: Date
+    issueNumber: string | nullable
+    billingAddressID: string | nullable
+
+payment-method:
+  entity: PaymentMethod
+  fields:
+    name: string 
+    description: string 
+    paymentMethodType: string
 
 order:
   entity: Order
   fields:
-    orderCode: string
     userId: string
+    orderCode: string
     orderType: string
     totalAmount: number
     quantity: number
-    couponId: string 
+    couponId: string | nullable 
     status: string 
+    paymentCardId: string 
     paymentMethodId: string 
-    discountAmount: number 
-    note: string 
-    orderRatingId: string 
+    discountAmount: number | nullable 
+    note: string | nullable 
+    orderRatingId: string | nullable 
     timeDelivery: Date 
-    timeComplete: Date 
+    timeComplete: Date | nullable 
     isCancel: boolean 
-    cancelReason: string 
+    cancelReason: string | nullable 
     shipFee: number 
     shipAddress: string 
-    shipCoordinates: string
+    shipCoordinates: string | nullable 
+    locationId: string | nullable
 
+order-basket:
+  entity: OrderBasket 
+  fields:
+    orderId: string 
+    basketId: string
 

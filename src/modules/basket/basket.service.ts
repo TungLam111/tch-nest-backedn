@@ -5,14 +5,8 @@ import { ApiResponse } from 'src/helper/common/interfaces';
 import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { AddBasketDTO, UpdateBasketDTO } from './dtos/request.dto';
+import { BasketListResponseDto, BasketResponseDto } from './dtos/response.dto';
 import { Basket } from './entities/basket.entity';
-
-export class BasketListResponseDto {
-  results: Basket[];
-  foodPrice: number;
-  totalPrice: number;
-  deliveryPrice: number;
-}
 
 @Injectable()
 export class BasketService extends SharedService {
@@ -23,7 +17,9 @@ export class BasketService extends SharedService {
     super(BasketService.name);
   }
 
-  async getAllBasketItems(userId: string): Promise<ApiResponse> {
+  async getAllBasketItems(
+    userId: string,
+  ): Promise<ApiResponse<BasketListResponseDto>> {
     return this.handleRequest<BasketListResponseDto>(async () => {
       const baskets = await this.basketRepository.find({
         where: {
@@ -71,8 +67,8 @@ export class BasketService extends SharedService {
   async getOneBasketItem(
     userId: string,
     basketId: string,
-  ): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  ): Promise<ApiResponse<BasketResponseDto>> {
+    return this.handleRequest<BasketResponseDto>(async () => {
       const basket = await this.basketRepository.findOne({
         where: {
           isDeleted: false,
@@ -82,7 +78,7 @@ export class BasketService extends SharedService {
       });
 
       if (basket !== null && basket !== undefined) {
-        return <Basket>{
+        return <BasketResponseDto>{
           id: basket.id,
           mealId: basket.mealId,
           quantity: basket.quantity,
@@ -100,8 +96,11 @@ export class BasketService extends SharedService {
     });
   }
 
-  async deleteOne(userId: string, basketId: string): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  async deleteOne(
+    userId: string,
+    basketId: string,
+  ): Promise<ApiResponse<Basket>> {
+    return this.handleRequest<Basket>(async () => {
       const basket = await this.basketRepository.findOne({
         where: {
           isDeleted: false,
@@ -122,8 +121,11 @@ export class BasketService extends SharedService {
     });
   }
 
-  async addOne(userId: string, dto: AddBasketDTO): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  async addOne(
+    userId: string,
+    dto: AddBasketDTO,
+  ): Promise<ApiResponse<Basket>> {
+    return this.handleRequest<Basket>(async () => {
       const newBasket = new Basket();
       newBasket.userId = userId;
       newBasket.mealId = dto.mealId;
@@ -147,8 +149,8 @@ export class BasketService extends SharedService {
     userId: string,
     basketId: string,
     dto: UpdateBasketDTO,
-  ): Promise<ApiResponse> {
-    return this.handleRequest(async () => {
+  ): Promise<ApiResponse<Basket>> {
+    return this.handleRequest<Basket>(async () => {
       const findBasket = await this.basketRepository.findOne({
         where: {
           id: basketId,

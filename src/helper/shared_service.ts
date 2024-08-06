@@ -10,8 +10,8 @@ export class SharedService {
   async handleRequest<T>(
     operation: () => Promise<T>,
     successStatusCode?: number,
-  ): Promise<ApiResponse> {
-    const response = new ResponseData();
+  ): Promise<ApiResponse<T>> {
+    const response = new ResponseData<T>();
     try {
       const result = await operation();
       response.hasError = false;
