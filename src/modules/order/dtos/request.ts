@@ -10,7 +10,7 @@ export class CreateOrderRequest {
   @ApiProperty()
   couponId: string;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   paymentCardId: string;
 
   @ApiProperty()

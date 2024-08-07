@@ -1,5 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common_entity';
 @Entity()
 export class Order extends AbstractEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -26,7 +26,7 @@ export class Order extends AbstractEntity {
   @Column()
   status: string;
 
-  @Column()
+  @Column({ nullable: true })
   paymentCardId: string;
 
   @Column()
@@ -64,32 +64,15 @@ export class Order extends AbstractEntity {
 
   @Column({ nullable: true })
   locationId: string;
+
 }
 
+
 export function OrderCreateInput(createOrderDto: {
-  userId: string;
-  orderCode: string;
-  orderType: string;
-  totalAmount: number;
-  quantity: number;
-  couponId: string | null;
-  status: string;
-  paymentCardId: string;
-  paymentMethodId: string;
-  discountAmount: number | null;
-  note: string | null;
-  orderRatingId: string | null;
-  timeDelivery: Date;
-  timeComplete: Date | null;
-  isCancel: boolean;
-  cancelReason: string | null;
-  shipFee: number;
-  shipAddress: string;
-  shipCoordinates: string | null;
-  locationId: string | null;
-}): Order {
+        userId: string, orderCode: string, orderType: string, totalAmount: number, quantity: number, couponId: string | null, status: string, paymentCardId: string | null, paymentMethodId: string, discountAmount: number | null, note: string | null, orderRatingId: string | null, timeDelivery: Date, timeComplete: Date | null, isCancel: boolean, cancelReason: string | null, shipFee: number, shipAddress: string, shipCoordinates: string | null, locationId: string | null
+    }): Order {
   const createDto: Order = new Order();
-  createDto.userId = createOrderDto.userId;
+    createDto.userId = createOrderDto.userId;
   createDto.orderCode = createOrderDto.orderCode;
   createDto.orderType = createOrderDto.orderType;
   createDto.totalAmount = createOrderDto.totalAmount;
@@ -112,34 +95,12 @@ export function OrderCreateInput(createOrderDto: {
   return createDto;
 }
 
-export function OrderUpdateInput(
-  currentOrder: Order,
-  updateOrderDto: {
-    userId: string;
-    orderCode: string;
-    orderType: string;
-    totalAmount: number;
-    quantity: number;
-    couponId: string | null;
-    status: string;
-    paymentCardId: string;
-    paymentMethodId: string;
-    discountAmount: number | null;
-    note: string | null;
-    orderRatingId: string | null;
-    timeDelivery: Date;
-    timeComplete: Date | null;
-    isCancel: boolean;
-    cancelReason: string | null;
-    shipFee: number;
-    shipAddress: string;
-    shipCoordinates: string | null;
-    locationId: string | null;
-  },
-): Order {
+export function OrderUpdateInput(currentOrder: Order, updateOrderDto: {
+        userId: string, orderCode: string, orderType: string, totalAmount: number, quantity: number, couponId: string | null, status: string, paymentCardId: string | null, paymentMethodId: string, discountAmount: number | null, note: string | null, orderRatingId: string | null, timeDelivery: Date, timeComplete: Date | null, isCancel: boolean, cancelReason: string | null, shipFee: number, shipAddress: string, shipCoordinates: string | null, locationId: string | null
+    }): Order {
   return {
     ...currentOrder,
-    userId: updateOrderDto.userId,
+        userId: updateOrderDto.userId,
     orderCode: updateOrderDto.orderCode,
     orderType: updateOrderDto.orderType,
     totalAmount: updateOrderDto.totalAmount,
@@ -161,3 +122,4 @@ export function OrderUpdateInput(
     locationId: updateOrderDto.locationId,
   };
 }
+

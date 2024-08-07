@@ -3,8 +3,6 @@ import { Basket } from '../entities/basket.entity';
 export class BasketListResponseDto {
   results: Basket[];
   foodPrice: number;
-  totalPrice: number;
-  deliveryPrice: number;
 }
 
 export class BasketResponseDto {

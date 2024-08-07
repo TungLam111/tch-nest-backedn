@@ -3,7 +3,7 @@ export class CreateOrderDto {
 
   couponId: string;
 
-  paymentCardId: string;
+  paymentCardId: string | null;
 
   paymentMethodId: string;
 

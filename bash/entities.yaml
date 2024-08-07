@@ -27,7 +27,7 @@ order:
     quantity: number
     couponId: string | nullable 
     status: string 
-    paymentCardId: string 
+    paymentCardId: string | nullable 
     paymentMethodId: string 
     discountAmount: number | nullable 
     note: string | nullable 
@@ -46,4 +46,29 @@ order-basket:
   fields:
     orderId: string 
     basketId: string
+
+coupon: 
+  entity: Coupon 
+  fields:
+    code: string 
+    couponType : string 
+    description: string 
+    discountPercentage: number
+    expiryDate: Date
+    minimumSpend: number | nullable 
+    isActive: boolean 
+    userId: string | nullable 
+
+basket: 
+  entity: Basket 
+  fields:
+    mealId: string 
+    quantity: number | nullable 
+    price: string 
+    topping: string 
+    userId: string 
+    mealCategory: string | nullable 
+    mealName: string | nullable 
+    mealImage: string | nullable 
+    isDone: boolean | nullable 
 

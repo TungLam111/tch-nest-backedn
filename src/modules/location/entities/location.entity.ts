@@ -23,7 +23,7 @@ export class Location extends AbstractEntity {
   latitude: number;
 
   @Column()
-  longtitude: number;
+  longitude: number;
 
   @Column()
   ggPlaceId: string;

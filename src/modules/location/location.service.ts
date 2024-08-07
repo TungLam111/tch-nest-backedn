@@ -67,7 +67,7 @@ export class LocationService {
         address: newLocation.address,
         name: newLocation.name,
         latitude: newLocation.latitude,
-        longtitude: newLocation.longitude,
+        longitude: newLocation.longitude,
         ggPlaceId: newLocation.ggPlaceId,
       };
 
@@ -101,7 +101,7 @@ export class LocationService {
       location.address = newLocation.address;
       location.name = newLocation.name;
       location.latitude = newLocation.latitude;
-      location.longtitude = newLocation.longitude;
+      location.longitude = newLocation.longitude;
       location.ggPlaceId = newLocation.ggPlaceId;
       location.userId = user.id;
 

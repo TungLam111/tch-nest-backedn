@@ -21,47 +21,48 @@ export class BasketService extends SharedService {
     userId: string,
   ): Promise<ApiResponse<BasketListResponseDto>> {
     return this.handleRequest<BasketListResponseDto>(async () => {
-      const baskets = await this.basketRepository.find({
-        where: {
-          isDeleted: false,
-          userId: userId,
-        },
-        order: {
-          createdAt: 'DESC',
-        },
-      });
-
-      if (baskets !== undefined && baskets !== null) {
-        let basketList = baskets.map(
-          (e) =>
-            <Basket>{
-              id: e.id,
-              mealId: e.mealId,
-              quantity: e.quantity,
-              price: e.price,
-              topping: JSON.parse(e.topping),
-              userId: e.userId,
-              mealCategory: e.mealCategory,
-              mealName: e.mealName,
-              mealImage: e.mealImage,
-              createdAt: e.createdAt,
-            },
-        );
-        let foodPrice = 0;
-        basketList.forEach((e) => {
-          foodPrice += +(e.price ?? 0) * e.quantity;
-        });
-        let discountPrice = 1;
-        let deliveryPrice = 2;
-        return {
-          results: basketList,
-          foodPrice: foodPrice,
-          totalPrice: foodPrice + deliveryPrice - discountPrice,
-          deliveryPrice: deliveryPrice,
-        };
-      }
-      return { results: [], foodPrice: 0, totalPrice: 0, deliveryPrice: 0 };
+      return this.getAllRecentBaskets(userId);
     });
+  }
+
+  async getAllRecentBaskets(userId: string): Promise<BasketListResponseDto> {
+    const baskets = await this.basketRepository.find({
+      where: {
+        isDeleted: false,
+        userId: userId,
+        isDone: false,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (baskets !== undefined && baskets !== null) {
+      let basketList = baskets.map(
+        (e) =>
+          <Basket>{
+            id: e.id,
+            mealId: e.mealId,
+            quantity: e.quantity,
+            price: e.price,
+            topping: JSON.parse(e.topping),
+            userId: e.userId,
+            mealCategory: e.mealCategory,
+            mealName: e.mealName,
+            mealImage: e.mealImage,
+            createdAt: e.createdAt,
+          },
+      );
+      let foodPrice = 0;
+      basketList.forEach((e) => {
+        foodPrice += +(e.price ?? 0) * e.quantity;
+      });
+      return {
+        results: basketList,
+        foodPrice: foodPrice,
+      };
+    }
+    return { results: [], foodPrice: 0 };
   }
 
   async getOneBasketItem(
@@ -74,6 +75,7 @@ export class BasketService extends SharedService {
           isDeleted: false,
           userId: userId,
           id: basketId,
+          isDone: false,
         },
       });
 
@@ -115,6 +117,7 @@ export class BasketService extends SharedService {
 
       basket.deletedDate = new Date();
       basket.isDeleted = true;
+      basket.isDone = true;
 
       const updatedBasket = await this.basketRepository.save(basket);
       return updatedBasket;
@@ -135,6 +138,7 @@ export class BasketService extends SharedService {
       newBasket.mealCategory = dto.mealCategory;
       newBasket.mealImage = dto.mealImage;
       newBasket.mealName = dto.mealName;
+      newBasket.isDone = false;
 
       const addedBasket = await this.basketRepository.save(newBasket);
 

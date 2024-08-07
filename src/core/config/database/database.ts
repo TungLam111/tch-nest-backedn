@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import { Basket } from 'src/modules/basket/entities/basket.entity';
+import { Coupon } from 'src/modules/coupon/entities/coupon.entity';
 import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { Location } from 'src/modules/location/entities/location.entity';
 import { TchNotification } from 'src/modules/notification/entities/notification.entity';
+import { OrderBasket } from 'src/modules/order-basket/entities/order-basket.entity';
 import { PaymentCard } from 'src/modules/payment-card/entities/payment-card.entity';
 import { DataSourceOptions } from 'typeorm';
 import { MenuProduct } from '../../../modules/menu/entities/menu-product.entity';
@@ -37,6 +39,8 @@ const databaseConfig: DataSourceOptions = {
     Basket,
     PaymentCard,
     Location,
+    OrderBasket,
+    Coupon,
   ],
   migrations: ['../../core/config/migrations/*{.ts,.js}'],
   synchronize: false,

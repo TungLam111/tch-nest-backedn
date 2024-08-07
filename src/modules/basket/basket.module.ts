@@ -8,5 +8,6 @@ import { Basket } from './entities/basket.entity';
   controllers: [BasketController],
   providers: [BasketService],
   imports: [TypeOrmModule.forFeature([Basket])],
+  exports: [BasketService],
 })
 export class BasketModule {}

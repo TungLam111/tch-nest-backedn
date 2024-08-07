@@ -18,3 +18,6 @@ migrate-apply:
 	yarn run apply:migration
 
 # CreateUsersTable
+
+gen:
+	bash/generate-input-instance.sh
