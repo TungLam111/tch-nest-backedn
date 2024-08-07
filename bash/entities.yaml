@@ -1,0 +1,74 @@
+payment-card:
+  entity: PaymentCard
+  fields:
+    userId: string
+    cardHolderName: string
+    cardNumber: string
+    cardType: string
+    expirationDate: Date
+    startDate: Date
+    issueNumber: string | nullable
+    billingAddressID: string | nullable
+
+payment-method:
+  entity: PaymentMethod
+  fields:
+    name: string 
+    description: string 
+    paymentMethodType: string
+
+order:
+  entity: Order
+  fields:
+    userId: string
+    orderCode: string
+    orderType: string
+    totalAmount: number
+    quantity: number
+    couponId: string | nullable 
+    status: string 
+    paymentCardId: string | nullable 
+    paymentMethodId: string 
+    discountAmount: number | nullable 
+    note: string | nullable 
+    orderRatingId: string | nullable 
+    timeDelivery: Date 
+    timeComplete: Date | nullable 
+    isCancel: boolean 
+    cancelReason: string | nullable 
+    shipFee: number 
+    shipAddress: string 
+    shipCoordinates: string | nullable 
+    locationId: string | nullable
+
+order-basket:
+  entity: OrderBasket 
+  fields:
+    orderId: string 
+    basketId: string
+
+coupon: 
+  entity: Coupon 
+  fields:
+    code: string 
+    couponType : string 
+    description: string 
+    discountPercentage: number
+    expiryDate: Date
+    minimumSpend: number | nullable 
+    isActive: boolean 
+    userId: string | nullable 
+
+basket: 
+  entity: Basket 
+  fields:
+    mealId: string 
+    quantity: number | nullable 
+    price: string 
+    topping: string 
+    userId: string 
+    mealCategory: string | nullable 
+    mealName: string | nullable 
+    mealImage: string | nullable 
+    isDone: boolean | nullable 
+
