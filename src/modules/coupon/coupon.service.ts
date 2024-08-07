@@ -4,7 +4,7 @@ import { CouponType } from 'src/helper/common/enum';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
 import { SharedService } from 'src/helper/shared_service';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { BasketService } from '../basket/basket.service';
 import { CheckUsageCouponRequest } from './dtos/request.dto';
 import { CheckUsageCouponResponse } from './dtos/response.dto';
@@ -23,11 +23,18 @@ export class CouponService extends SharedService {
   async getAll(userId: string): Promise<ApiResponse<Coupon[]>> {
     return this.handleRequest<Coupon[]>(async () => {
       const coupons = await this.couponRepository.find({
-        where: {
-          isDeleted: false,
-          userId: userId || null,
-          isActive: true,
-        },
+        where: [
+          {
+            isDeleted: false,
+            userId: userId,
+            isActive: true,
+          },
+          {
+            isDeleted: false,
+            userId: null,
+            isActive: true,
+          },
+        ],
         order: {
           createdAt: 'DESC',
         },
@@ -43,12 +50,10 @@ export class CouponService extends SharedService {
   async getOne(userId: string, couponId: string): Promise<ApiResponse<Coupon>> {
     return this.handleRequest<Coupon>(async () => {
       const coupon = await this.couponRepository.findOne({
-        where: {
-          isDeleted: false,
-          userId: userId || null,
-          id: couponId,
-          isActive: true,
-        },
+        where: [
+          { id: couponId, isDeleted: false, userId: userId, isActive: true },
+          { id: couponId, isDeleted: false, userId: null, isActive: true },
+        ],
       });
       return coupon;
     });
@@ -61,12 +66,20 @@ export class CouponService extends SharedService {
   ): Promise<ApiResponse<CheckUsageCouponResponse>> {
     return this.handleRequest<CheckUsageCouponResponse>(async () => {
       const coupon = await this.couponRepository.findOne({
-        where: {
-          isDeleted: false,
-          userId: userId || null,
-          id: couponId,
-          isActive: true,
-        },
+        where: [
+          {
+            isDeleted: false,
+            id: couponId,
+            isActive: true,
+            userId: userId,
+          },
+          {
+            isDeleted: false,
+            id: couponId,
+            isActive: true,
+            userId: IsNull(),
+          },
+        ],
       });
 
       if (!coupon)
@@ -82,7 +95,8 @@ export class CouponService extends SharedService {
       const basketListInfo =
         await this.basketService.getAllRecentBaskets(userId);
 
-      let totalPriceAfterCoupon = basketListInfo.foodPrice + dto.amountDelivery;
+      let totalPriceAfterCoupon =
+        basketListInfo.foodPrice + (dto.amountDelivery ?? 0);
       let amountCoupon = 0;
 
       if (!basketListInfo || basketListInfo.results.length === 0)
@@ -91,7 +105,8 @@ export class CouponService extends SharedService {
       if (coupon.couponType === CouponType[CouponType.discount]) {
         if (coupon.minimumSpend && coupon.discountPercentage) {
           if (basketListInfo.foodPrice >= coupon.minimumSpend) {
-            amountCoupon = basketListInfo.foodPrice * coupon.discountPercentage;
+            amountCoupon =
+              (basketListInfo.foodPrice * coupon.discountPercentage) / 100;
             totalPriceAfterCoupon = totalPriceAfterCoupon - amountCoupon;
           } else {
             return {
@@ -111,7 +126,7 @@ export class CouponService extends SharedService {
       }
       return {
         isValid: true,
-        message: 'free delivery ok',
+        message: 'Free delivery ok',
         amountDiscount: amountCoupon,
         amountTotal: totalPriceAfterCoupon,
       };
