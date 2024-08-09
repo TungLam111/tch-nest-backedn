@@ -6,13 +6,108 @@ current_entity=""
 declare -a fields
 declare -a types
 
+declare -a referencedColumnNames 
+declare -a relations 
+declare -a entityNames
+
+# Function to convert PascalCase to camelCase
+to_camel_case() {
+    local pascal_case_string="$1"
+    if [[ -z "$pascal_case_string" ]]; then
+        echo "$pascal_case_string" # Return as is if the string is empty
+    else
+        # Convert the first character to lowercase and concatenate with the rest of the string
+        echo "$(tr '[:upper:]' '[:lower:]' <<< "${pascal_case_string:0:1}")${pascal_case_string:1}"
+    fi
+}
+
+list_to_set() {
+    local list=("$@")  # Capture all arguments as an array
+    local unique_list=() # Array to store unique elements
+
+    # Iterate over the list and filter out "null" and empty strings
+    for item in "${list[@]}"; do
+        if [[ -n "$item" && "$item" != "null" ]]; then
+            unique_list+=("$item")
+        fi
+    done
+
+    # Sort and remove duplicates
+    unique_list=($(printf "%s\n" "${unique_list[@]}" | sort -u))
+
+    echo "${unique_list[@]}"
+}
+
+# Function to convert a list to a comma-separated string of unique elements
+list_to_comma_separated_string() {
+    local list=("$@")  # Capture all arguments as an array
+    local unique_list=() # Array to store unique elements
+    local set_string=""
+
+    # Iterate over the list and filter out "null" and empty strings
+    for item in "${list[@]}"; do
+        if [[ -n "$item" && "$item" != "null" ]]; then
+            unique_list+=("$item")
+        fi
+    done
+
+    # Sort and remove duplicates
+    unique_list=($(printf "%s\n" "${unique_list[@]}" | sort -u))
+
+    # Construct a comma-separated string
+    for element in "${unique_list[@]}"; do
+        if [[ -n "$set_string" ]]; then
+            set_string+=", "
+        fi
+        set_string+="$element"
+    done
+
+    if [[ -n "${set_string}" && "${set_string}" != "" ]]; then
+        set_string+=", JoinColumn"
+    fi
+    
+    echo "$set_string"  # Output the result
+}
+
+entity_to_name_file() {
+    local entity_name="$1"
+    # Convert PascalCase to kebab-case
+    local filename=$(echo "$entity_name" | sed 's/\([a-z0-9]\)\([A-Z]\)/\1-\2/g' | tr '[:upper:]' '[:lower:]')
+    echo "$filename"
+}
+
 # Function to write the TypeScript class and functions to file
 write_to_file() {
     entity_file="src/modules/${module_name}/entities/${module_name}.entity.ts"
+    
+    # Check if the file exists
+    if [[ -f "$entity_file" ]]; then
+        # Clear the content of the file using redirection
+        > "$entity_file"
+        echo "File '$entity_file' has been cleared."
+    else
+        echo "File '$entity_file' does not exist."
+    fi
+
     # Write imports
-    echo "import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';" > "$entity_file"
     echo "import { AbstractEntity } from 'src/helper/common/common_entity';" >> "$entity_file"
-   
+    echo "import { Column, Entity, PrimaryGeneratedColumn," >> "$entity_file"
+
+    comma_separated_string=$(list_to_comma_separated_string "${relations[@]}")
+
+    echo " ${comma_separated_string} } from 'typeorm';" >> "$entity_file"
+
+    string_entity=$(list_to_set "${entityNames[@]}")
+    read -ra unique_entityNames <<< "$string_entity"
+    if [[ ! -z "${unique_entityNames[@]}" ]]; then
+        for i in "${!unique_entityNames[@]}"; do 
+            entity=$(entity_to_name_file "${unique_entityNames[$i]}")
+            echo "import { ${unique_entityNames[$i]} } from 'src/modules/${entity}/entities/${entity}.entity';" >> "$entity_file"
+        done 
+    fi 
+
+    echo "" >> "$entity_file"
+
     echo "@Entity()" >> "$entity_file"
     echo "export class $current_entity extends AbstractEntity {" >> "$entity_file"
     echo "  @PrimaryGeneratedColumn('uuid')" >> "$entity_file"
@@ -29,17 +124,34 @@ write_to_file() {
             trimmed_parts+=("$(echo -n "$part" | xargs)")
         done
         
-        # Check if 'nullable' is in the trimmed parts
-        if [[ " ${trimmed_parts[@]} " =~ " nullable " ]]; then
-            # If 'nullable' is found, set the column as nullable
-            echo "  @Column({ nullable: true })" >> "$entity_file"
-        else
-            # Otherwise, use the normal column definition
-            echo "  @Column()" >> "$entity_file"
+        if [[ "${relations[$i]}" =~ "OneToMany" ]]; then 
+            camel_case=$(to_camel_case "${entityNames[$i]}")
+            echo "  @${relations[$i]}(() => ${entityNames[$i]}, ${camel_case} => ${camel_case}.${referencedColumnNames[$i]})"  >> "$entity_file"
+            echo "  ${fields[$i]}: ${trimmed_parts[0]};" >> "$entity_file"
+            echo "" >> "$entity_file"
+        else 
+            # Check if 'nullable' is in the trimmed parts
+            if [[ " ${trimmed_parts[@]} " =~ " nullable " ]]; then
+                # If 'nullable' is found, set the column as nullable
+                echo "  @Column({ nullable: true })" >> "$entity_file"
+            else
+                # Otherwise, use the normal column definition
+                echo "  @Column()" >> "$entity_file"
+            fi
+            echo "  ${fields[$i]}: ${trimmed_parts[0]};" >> "$entity_file"
+            echo "" >> "$entity_file"
+
+            # Check if names[$i] is not null, not empty, and not the string "null"
+            if [[ -n "${entityNames[$i]}" && "${entityNames[$i]}" != "null" ]]; then
+                echo "  @${relations[$i]}(() => ${entityNames[$i]})" >> "$entity_file"
+                echo "  @JoinColumn({ name: '${fields[$i]}', referencedColumnName: '${referencedColumnNames[$i]}'})" >> "$entity_file"
+                
+                camel_case=$(to_camel_case "${entityNames[$i]}")
+
+                echo "  ${camel_case}: ${entityNames[$i]};" >> "$entity_file"
+                echo "" >> "$entity_file"
+            fi
         fi
-    
-        echo "  ${fields[$i]}: ${trimmed_parts[0]};" >> "$entity_file"
-        echo "" >> "$entity_file"
     done
 
     echo "}" >> "$entity_file"
@@ -146,15 +258,31 @@ while IFS= read -r line; do
         current_entity=""
         fields=()
         types=()
+        relations=()
+        entityNames=()
+        referencedColumnNames=()
+
     elif [[ $line =~ ^[[:space:]]+entity: ]]; then
         current_entity=$(echo "$line" | awk -F: '{print $2}' | xargs)
     elif [[ $line =~ ^[[:space:]]+[a-zA-Z] ]]; then
         # Read fields and their types, skipping "fields" line
         if [[ ! $line =~ ^[[:space:]]+fields: ]]; then
-            field=$(echo "$line" | awk -F: '{print $1}' | xargs)
-            type=$(echo "$line" | awk -F: '{print $2}' | xargs)
-            fields+=("$field")
-            types+=("$type")
+            if [[ $line =~ ^[[:space:]]+type: ]]; then 
+                type=$(echo "$line" | awk -F: '{print $2}' | xargs)
+                types+=("$type")
+            elif [[ $line =~ ^[[:space:]]+entityName: ]]; then 
+                entityName=$(echo "$line" | awk -F: '{print $2}' | xargs)
+                entityNames+=("$entityName")                
+            elif [[ $line =~ ^[[:space:]]+relation: ]]; then 
+                relation=$(echo "$line" | awk -F: '{print $2}' | xargs)
+                relations+=("$relation")
+            elif [[ $line =~ ^[[:space:]]+referencedColumnName: ]]; then
+                referencedColumnName=$(echo "$line" | awk -F: '{print $2}' | xargs)
+                referencedColumnNames+=("$referencedColumnName")
+            else
+                field=$(echo "$line" | awk -F: '{print $1}' | xargs)
+                fields+=("$field")
+            fi
         fi
     fi
 done < "$filename"

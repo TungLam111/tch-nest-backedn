@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
 import { AddToppingOptionDto } from './dtos/add-topping-option.dto';
-import { ToppingOption } from './entities/topping-option.entity';
 import { Topping } from './entities/topping.entity';
+import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 
 @Injectable()
 export class ToppingService {

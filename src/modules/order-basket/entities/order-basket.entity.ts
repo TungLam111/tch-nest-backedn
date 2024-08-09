@@ -1,5 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from 'src/helper/common/common_entity';
+import { Column, Entity, PrimaryGeneratedColumn,
+ ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { Basket } from 'src/modules/basket/entities/basket.entity';
+import { Order } from 'src/modules/order/entities/order.entity';
+
 @Entity()
 export class OrderBasket extends AbstractEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -8,8 +12,16 @@ export class OrderBasket extends AbstractEntity {
   @Column()
   orderId: string;
 
+  @ManyToOne(() => Order)
+  @JoinColumn({ name: 'orderId', referencedColumnName: 'id'})
+  order: Order;
+
   @Column()
   basketId: string;
+
+  @OneToOne(() => Basket)
+  @JoinColumn({ name: 'basketId', referencedColumnName: 'id'})
+  basket: Basket;
 
 }
 

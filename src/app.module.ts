@@ -18,7 +18,6 @@ import { CouponModule } from './modules/coupon/coupon.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { LocationModule } from './modules/location/location.module';
 import { MenuModule } from './modules/menu/menu.module';
-import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentCardModule } from './modules/payment-card/payment-card.module';
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
@@ -26,6 +25,7 @@ import { ProductModule } from './modules/product/product.module';
 import { RatingModule } from './modules/rating/rating.module';
 import { SettingModule } from './modules/setting/setting.module';
 import { StoreModule } from './modules/store/store.module';
+import { TchNotificationModule } from './modules/tch-notification/tch-notification.module';
 import { ToppingModule } from './modules/topping/topping.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -59,7 +59,7 @@ import { UserModule } from './modules/user/user.module';
     MenuModule,
     ToppingModule,
     RatingModule,
-    NotificationModule,
+    TchNotificationModule,
     FeedbackModule,
     BasketModule,
     PaymentCardModule,

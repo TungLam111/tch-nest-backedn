@@ -1,5 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from 'src/helper/common/common_entity';
+import { Column, Entity, PrimaryGeneratedColumn,
+ ManyToOne, JoinColumn } from 'typeorm';
+import { User } from 'src/modules/user/entities/user.entity';
+
 @Entity()
 export class PaymentCard extends AbstractEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -7,6 +10,10 @@ export class PaymentCard extends AbstractEntity {
 
   @Column()
   userId: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  user: User;
 
   @Column()
   cardHolderName: string;

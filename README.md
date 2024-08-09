@@ -27,6 +27,7 @@ To migrate:
 - Run:
   make migrate-add MIGRATE_NAME=CreateUsersTable
   make migrate-apply
+  
 - To run api, change to:
   migrations: [
   '../../core/config/migrations/*{.ts,.js}'

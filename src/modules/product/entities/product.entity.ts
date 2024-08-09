@@ -1,25 +1,47 @@
-import { MenuProduct } from 'src/modules/menu/entities/menu-product.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AbstractEntity } from '../../../helper/common/common_entity';
+import { AbstractEntity } from 'src/helper/common/common_entity';
+import { Column, Entity, PrimaryGeneratedColumn,
+  } from 'typeorm';
 
 @Entity()
 export class Product extends AbstractEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column()
-    images: string;
+  @Column()
+  images: string;
 
-    @Column()
-    description: string;
+  @Column()
+  description: string;
 
-    @Column()
-    basePrice: number;
+  @Column()
+  basePrice: number;
 
-    @OneToMany(() => MenuProduct, menuProduct => menuProduct.product)
-    menuProducts: MenuProduct[];
+}
+
+
+export function ProductCreateInput(createProductDto: {
+        name: string, images: string, description: string, basePrice: number
+    }): Product {
+  const createDto: Product = new Product();
+    createDto.name = createProductDto.name;
+  createDto.images = createProductDto.images;
+  createDto.description = createProductDto.description;
+  createDto.basePrice = createProductDto.basePrice;
+  return createDto;
+}
+
+export function ProductUpdateInput(currentProduct: Product, updateProductDto: {
+        name: string, images: string, description: string, basePrice: number
+    }): Product {
+  return {
+    ...currentProduct,
+        name: updateProductDto.name,
+    images: updateProductDto.images,
+    description: updateProductDto.description,
+    basePrice: updateProductDto.basePrice,
+  };
 }
 

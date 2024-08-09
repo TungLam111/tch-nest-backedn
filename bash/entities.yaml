@@ -1,74 +1,576 @@
 payment-card:
   entity: PaymentCard
   fields:
-    userId: string
-    cardHolderName: string
-    cardNumber: string
-    cardType: string
-    expirationDate: Date
-    startDate: Date
-    issueNumber: string | nullable
-    billingAddressID: string | nullable
+    userId: 
+      type: string
+      relation: ManyToOne 
+      entityName: User 
+      referencedColumnName: id 
+    cardHolderName: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    cardNumber: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    cardType: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    expirationDate: 
+      type: Date
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    startDate: 
+      type: Date 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    issueNumber: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    billingAddressID: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
 
 payment-method:
   entity: PaymentMethod
   fields:
-    name: string 
-    description: string 
-    paymentMethodType: string
+    name: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    description: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    paymentMethodType: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
 
 order:
   entity: Order
   fields:
-    userId: string
-    orderCode: string
-    orderType: string
-    totalAmount: number
-    quantity: number
-    couponId: string | nullable 
-    status: string 
-    paymentCardId: string | nullable 
-    paymentMethodId: string 
-    discountAmount: number | nullable 
-    note: string | nullable 
-    orderRatingId: string | nullable 
-    timeDelivery: Date 
-    timeComplete: Date | nullable 
-    isCancel: boolean 
-    cancelReason: string | nullable 
-    shipFee: number 
-    shipAddress: string 
-    shipCoordinates: string | nullable 
-    locationId: string | nullable
+    userId: 
+      type: string 
+      relation: ManyToOne 
+      entityName: User 
+      referencedColumnName: id 
+    orderCode: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    orderType: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    totalAmount: 
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    quantity: 
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    couponId: 
+      type: string | nullable 
+      relation: ManyToOne
+      entityName: Coupon
+      referencedColumnName: id
+    status: 
+      type: string 
+      relation: null
+      entityName: 
+      referencedColumnName: null
+    paymentCardId: 
+      type: string | nullable 
+      relation: ManyToOne
+      entityName: PaymentCard
+      referencedColumnName: id
+    paymentMethodId: 
+      type: string 
+      relation: ManyToOne 
+      entityName: PaymentMethod
+      referencedColumnName: id 
+    discountAmount: 
+      type: number | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    note: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    orderRatingId: 
+      type: string | nullable 
+      relation: OneToOne 
+      entityName: OrderRating 
+      referencedColumnName: id 
+    timeDelivery:
+      type: Date 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    timeComplete: 
+      type: Date | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    isCancel: 
+      type: boolean 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    cancelReason: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    shipFee: 
+      type: number 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    shipAddress: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    shipCoordinates: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    locationId: 
+      type: string | nullable
+      relation: ManyToOne 
+      entityName: Location 
+      referencedColumnName: id 
+
+order-rating: 
+  entity: OrderRating 
+  fields:
+    content: 
+      type: string 
+      relation:  null 
+      entityName: null 
+      referencedColumnName: null        
 
 order-basket:
   entity: OrderBasket 
   fields:
-    orderId: string 
-    basketId: string
+    orderId: 
+      type: string 
+      relation: ManyToOne 
+      entityName: Order 
+      referencedColumnName: id 
+    basketId: 
+      type: string 
+      relation: OneToOne 
+      entityName: Basket 
+      referencedColumnName: id 
 
 coupon: 
   entity: Coupon 
   fields:
-    code: string 
-    couponType : string 
-    description: string 
-    discountPercentage: number
-    expiryDate: Date
-    minimumSpend: number | nullable 
-    isActive: boolean 
-    userId: string | nullable 
+    code: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    couponType : 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    description: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    discountPercentage: 
+      type: number | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    expiryDate: 
+      type: Date 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    minimumSpend: 
+      type: number | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    isActive: 
+      type: boolean 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    userId: 
+      type: string | nullable 
+      relation: ManyToOne
+      entityName: User 
+      referencedColumnName: id 
 
 basket: 
   entity: Basket 
   fields:
-    mealId: string 
-    quantity: number | nullable 
-    price: string 
-    topping: string 
-    userId: string 
-    mealCategory: string | nullable 
-    mealName: string | nullable 
-    mealImage: string | nullable 
-    isDone: boolean | nullable 
+    mealId: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    quantity: 
+      type: number | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    price: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    topping: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    userId: 
+      type: string 
+      relation: ManyToOne 
+      entityName: User 
+      referencedColumnName: id 
+    mealCategory: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    mealName: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    mealImage: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    isDone: 
+      type: boolean | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
 
+menu:
+  entity: Menu 
+  fields:
+    name: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    image: 
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    description:
+      type: string  
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    menuProducts:
+      type: MenuProduct[]
+      relation: OneToMany
+      entityName: MenuProduct 
+      referencedColumnName: menu 
+
+user: 
+  entity: User 
+  fields:
+    email:
+      type: string  
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    password:
+      type: string  
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    name:
+      type: string  
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    phoneNumber:
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    likeProducts:
+      type: string | nullable 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+
+product: 
+  entity: Product 
+  fields:
+    name: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    images: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    description: 
+      type: string 
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    basePrice: 
+      type: number  
+      relation: null
+      entityName: null
+      referencedColumnName: null
+
+menu-product:
+  entity: MenuProduct 
+  fields: 
+    menuId:
+      type: string 
+      relation: ManyToOne
+      entityName: Menu 
+      referencedColumnName: id
+    productId:
+      type: string 
+      relation: ManyToOne
+      entityName: Product  
+      referencedColumnName: id
+
+location:
+  entity: Location  
+  fields: 
+    address:
+      type: string 
+      relation: null 
+      entityName: null  
+      referencedColumnName: null 
+    name:
+      type: string | nullable
+      relation: null
+      entityName: null  
+      referencedColumnName: null
+    latitude:
+      type: number
+      relation: null 
+      entityName: null  
+      referencedColumnName: null 
+    longitude:
+      type: number 
+      relation: null 
+      entityName: null  
+      referencedColumnName: null 
+    ggPlaceId: 
+      type: string 
+      relation: null 
+      entityName: null  
+      referencedColumnName: null 
+    userId:
+      type: string 
+      relation: ManyToOne 
+      entityName: User   
+      referencedColumnName: id 
+
+product-topping:
+  entity: ProductTopping 
+  fields:
+    productId:
+      type: string 
+      relation: ManyToOne
+      entityName: Product  
+      referencedColumnName: id
+    toppingId:
+      type: string 
+      relation: ManyToOne
+      entityName: Topping   
+      referencedColumnName: id
+
+store:
+  entity: Store
+  fields:
+    name:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    contactPhone:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    address:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    latitude:
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    longitude:
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    ggPlaceId:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    timeSchedule:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    images:
+      type: string | nullable
+      relation: null
+      entityName: null
+      referencedColumnName: null
+
+topping-option:
+  entity: ToppingOption
+  fields:
+    name:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    price:
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    toppingId:
+      type: string
+      relation: ManyToOne
+      entityName: Topping
+      referencedColumnName: id
+
+topping: 
+  entity: Topping 
+  fields:
+    name: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    description: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    toppingType: 
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    isRequired: 
+      type: boolean
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    maxSelect: 
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    minSelect: 
+      type: number
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    options: 
+      type: ToppingOption[]
+      relation: OneToMany
+      entityName: ToppingOption
+      referencedColumnName: topping
+
+feedback: 
+  entity: Feedback 
+  fields:
+    content: 
+      type: string | nullable
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    userId: 
+      type: string
+      relation: OneToOne
+      entityName: User 
+      referencedColumnName: id
+    orderId: 
+      type: string
+      relation: OneToOne
+      entityName: Order
+      referencedColumnName: id
+
+tch-notification:
+  entity: TchNotification
+  fields:
+    title:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    body:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    thumbnail:
+      type: string | nullable
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    noti_type:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    seen_by_users:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null
+    meta_data:
+      type: string
+      relation: null
+      entityName: null
+      referencedColumnName: null

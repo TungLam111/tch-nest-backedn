@@ -1,5 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from 'src/helper/common/common_entity';
+import { Column, Entity, PrimaryGeneratedColumn,
+ ManyToOne, JoinColumn } from 'typeorm';
+import { User } from 'src/modules/user/entities/user.entity';
+
 @Entity()
 export class Coupon extends AbstractEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -14,7 +17,7 @@ export class Coupon extends AbstractEntity {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   discountPercentage: number;
 
   @Column()
@@ -29,11 +32,15 @@ export class Coupon extends AbstractEntity {
   @Column({ nullable: true })
   userId: string;
 
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  user: User;
+
 }
 
 
 export function CouponCreateInput(createCouponDto: {
-        code: string, couponType: string, description: string, discountPercentage: number, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
+        code: string, couponType: string, description: string, discountPercentage: number | null, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
     }): Coupon {
   const createDto: Coupon = new Coupon();
     createDto.code = createCouponDto.code;
@@ -48,7 +55,7 @@ export function CouponCreateInput(createCouponDto: {
 }
 
 export function CouponUpdateInput(currentCoupon: Coupon, updateCouponDto: {
-        code: string, couponType: string, description: string, discountPercentage: number, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
+        code: string, couponType: string, description: string, discountPercentage: number | null, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
     }): Coupon {
   return {
     ...currentCoupon,

@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AbstractEntity } from 'src/helper/common/common_entity';
+import { Column, Entity, PrimaryGeneratedColumn,
+ ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { Coupon } from 'src/modules/coupon/entities/coupon.entity';
+import { Location } from 'src/modules/location/entities/location.entity';
+import { OrderRating } from 'src/modules/order-rating/entities/order-rating.entity';
+import { PaymentCard } from 'src/modules/payment-card/entities/payment-card.entity';
+import { PaymentMethod } from 'src/modules/payment-method/entities/payment-method.entity';
+import { User } from 'src/modules/user/entities/user.entity';
+
 @Entity()
 export class Order extends AbstractEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -7,6 +15,10 @@ export class Order extends AbstractEntity {
 
   @Column()
   userId: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  user: User;
 
   @Column()
   orderCode: string;
@@ -23,14 +35,26 @@ export class Order extends AbstractEntity {
   @Column({ nullable: true })
   couponId: string;
 
+  @ManyToOne(() => Coupon)
+  @JoinColumn({ name: 'couponId', referencedColumnName: 'id'})
+  coupon: Coupon;
+
   @Column()
   status: string;
 
   @Column({ nullable: true })
   paymentCardId: string;
 
+  @ManyToOne(() => PaymentCard)
+  @JoinColumn({ name: 'paymentCardId', referencedColumnName: 'id'})
+  paymentCard: PaymentCard;
+
   @Column()
   paymentMethodId: string;
+
+  @ManyToOne(() => PaymentMethod)
+  @JoinColumn({ name: 'paymentMethodId', referencedColumnName: 'id'})
+  paymentMethod: PaymentMethod;
 
   @Column({ nullable: true })
   discountAmount: number;
@@ -40,6 +64,10 @@ export class Order extends AbstractEntity {
 
   @Column({ nullable: true })
   orderRatingId: string;
+
+  @OneToOne(() => OrderRating)
+  @JoinColumn({ name: 'orderRatingId', referencedColumnName: 'id'})
+  orderRating: OrderRating;
 
   @Column()
   timeDelivery: Date;
@@ -64,6 +92,10 @@ export class Order extends AbstractEntity {
 
   @Column({ nullable: true })
   locationId: string;
+
+  @ManyToOne(() => Location)
+  @JoinColumn({ name: 'locationId', referencedColumnName: 'id'})
+  location: Location;
 
 }
 

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ToppingOption } from './entities/topping-option.entity';
 import { Topping } from './entities/topping.entity';
 import { ToppingController } from './topping.controller';
 import { ToppingService } from './topping.service';
+import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 
 @Module({
   controllers: [ToppingController],

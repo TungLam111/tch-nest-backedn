@@ -34,5 +34,5 @@ export enum FavoriteProductAction {
 
 export enum CouponType {
   discount,
-  freeShip,
+  free_ship,
 }
