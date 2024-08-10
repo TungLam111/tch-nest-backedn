@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { AuthenticatedRoleRequest } from 'src/core/middleware/auth-user';
 import { CouponService } from './coupon.service';
-import { CheckUsageCouponRequest } from './dtos/request.dto';
+import { AddCouponRequest, CheckUsageCouponRequest } from './dtos/request.dto';
 
 @Controller('coupon')
 export class CouponController {
@@ -34,8 +34,12 @@ export class CouponController {
     @Param('id') couponId: string,
   ) {
     const result = await this.couponService.getOne(req.user.user.id, couponId);
+    res.status(result.status).json(result.content);
+  }
 
-    console.log(JSON.stringify(result.content));
+  @Post()
+  async addOne(@Res() res: any, @Body() requestBody: AddCouponRequest) {
+    const result = await this.couponService.addOne(requestBody);
     res.status(result.status).json(result.content);
   }
 }

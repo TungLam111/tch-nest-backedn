@@ -6,9 +6,9 @@ import { ApiResponse } from 'src/helper/common/interfaces';
 import { SharedService } from 'src/helper/shared_service';
 import { IsNull, Repository } from 'typeorm';
 import { BasketService } from '../basket/basket.service';
-import { CheckUsageCouponRequest } from './dtos/request.dto';
+import { AddCouponRequest, CheckUsageCouponRequest } from './dtos/request.dto';
 import { CheckUsageCouponResponse } from './dtos/response.dto';
-import { Coupon } from './entities/coupon.entity';
+import { Coupon, CouponCreateInput } from './entities/coupon.entity';
 
 @Injectable()
 export class CouponService extends SharedService {
@@ -55,6 +55,23 @@ export class CouponService extends SharedService {
           { id: couponId, isDeleted: false, userId: null, isActive: true },
         ],
       });
+      return coupon;
+    });
+  }
+
+  async addOne(dto: AddCouponRequest): Promise<ApiResponse<Coupon>> {
+    return this.handleRequest<Coupon>(async () => {
+      const toAddCoupon = CouponCreateInput({
+        code: dto.code,
+        couponType: dto.couponType,
+        description: dto.description,
+        discountPercentage: dto.discountPercentage,
+        expiryDate: dto.expiryDate,
+        minimumSpend: dto.minimumSpend,
+        isActive: true,
+        userId: null,
+      });
+      const coupon = await this.couponRepository.save(toAddCoupon);
       return coupon;
     });
   }

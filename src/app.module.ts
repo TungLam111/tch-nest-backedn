@@ -79,6 +79,10 @@ export class AppModule implements NestModule {
           path: 'auth/create-account',
           method: RequestMethod.POST,
         },
+        {
+          path: 'coupon',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes('*');
   }
