@@ -18,6 +18,7 @@ import { Product } from '../../../modules/product/entities/product.entity';
 import { Store } from '../../../modules/store/entities/store.entity';
 import { Topping } from '../../../modules/topping/entities/topping.entity';
 import { User } from '../../../modules/user/entities/user.entity';
+import { CreateUsersTable1723644154142 } from '../migrations/1723644154142-CreateUsersTable';
 
 const databaseConfig: DataSourceOptions = {
   type: 'postgres',
@@ -44,7 +45,7 @@ const databaseConfig: DataSourceOptions = {
     Coupon,
     OrderRating,
   ],
-  migrations: ['../../config/migrations/*{.ts,.js}'],
+  migrations: [CreateUsersTable1723644154142],
   synchronize: false,
   dropSchema: false,
   migrationsRun: false,

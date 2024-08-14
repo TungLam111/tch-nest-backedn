@@ -30,13 +30,16 @@ export function PaymentMethodCreateInput(createPaymentMethodDto: {
 }
 
 export function PaymentMethodUpdateInput(currentPaymentMethod: PaymentMethod, updatePaymentMethodDto: {
-        name: string, description: string, paymentMethodType: string
+        name?: string, description?: string, paymentMethodType?: string
     }): PaymentMethod {
-  return {
+  const updatePaymentMethod : PaymentMethod = {
     ...currentPaymentMethod,
-        name: updatePaymentMethodDto.name,
-    description: updatePaymentMethodDto.description,
-    paymentMethodType: updatePaymentMethodDto.paymentMethodType,
-  };
+  }
+
+      if (updatePaymentMethodDto.name != undefined) { updatePaymentMethod.name = updatePaymentMethodDto.name;}
+    if (updatePaymentMethodDto.description != undefined) { updatePaymentMethod.description = updatePaymentMethodDto.description;}
+    if (updatePaymentMethodDto.paymentMethodType != undefined) { updatePaymentMethod.paymentMethodType = updatePaymentMethodDto.paymentMethodType;}
+  
+  return updatePaymentMethod;
 }
 

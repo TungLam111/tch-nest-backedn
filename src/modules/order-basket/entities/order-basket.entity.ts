@@ -36,12 +36,15 @@ export function OrderBasketCreateInput(createOrderBasketDto: {
 }
 
 export function OrderBasketUpdateInput(currentOrderBasket: OrderBasket, updateOrderBasketDto: {
-        orderId: string, basketId: string
+        orderId?: string, basketId?: string
     }): OrderBasket {
-  return {
+  const updateOrderBasket : OrderBasket = {
     ...currentOrderBasket,
-        orderId: updateOrderBasketDto.orderId,
-    basketId: updateOrderBasketDto.basketId,
-  };
+  }
+
+      if (updateOrderBasketDto.orderId != undefined) { updateOrderBasket.orderId = updateOrderBasketDto.orderId;}
+    if (updateOrderBasketDto.basketId != undefined) { updateOrderBasket.basketId = updateOrderBasketDto.basketId;}
+  
+  return updateOrderBasket;
 }
 

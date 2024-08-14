@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthenticatedRoleRequest } from 'src/core/middleware/auth-user';
 import { User } from '../user/entities/user.entity';
-import { CreateFeedbackDto } from './dtos/create-feedback.dto';
+import { CreateFeedbackDto } from './dtos/request';
 import { FeedbackService } from './feedback.service';
 
 @Controller('feedback')

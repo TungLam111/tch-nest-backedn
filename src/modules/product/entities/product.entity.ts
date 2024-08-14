@@ -34,14 +34,17 @@ export function ProductCreateInput(createProductDto: {
 }
 
 export function ProductUpdateInput(currentProduct: Product, updateProductDto: {
-        name: string, images: string, description: string, basePrice: number
+        name?: string, images?: string, description?: string, basePrice?: number
     }): Product {
-  return {
+  const updateProduct : Product = {
     ...currentProduct,
-        name: updateProductDto.name,
-    images: updateProductDto.images,
-    description: updateProductDto.description,
-    basePrice: updateProductDto.basePrice,
-  };
+  }
+
+      if (updateProductDto.name != undefined) { updateProduct.name = updateProductDto.name;}
+    if (updateProductDto.images != undefined) { updateProduct.images = updateProductDto.images;}
+    if (updateProductDto.description != undefined) { updateProduct.description = updateProductDto.description;}
+    if (updateProductDto.basePrice != undefined) { updateProduct.basePrice = updateProductDto.basePrice;}
+  
+  return updateProduct;
 }
 

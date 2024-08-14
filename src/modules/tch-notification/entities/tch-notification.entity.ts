@@ -42,16 +42,19 @@ export function TchNotificationCreateInput(createTchNotificationDto: {
 }
 
 export function TchNotificationUpdateInput(currentTchNotification: TchNotification, updateTchNotificationDto: {
-        title: string, body: string, thumbnail: string | null, noti_type: string, seen_by_users: string, meta_data: string
+        title?: string, body?: string, thumbnail?: string | null, noti_type?: string, seen_by_users?: string, meta_data?: string
     }): TchNotification {
-  return {
+  const updateTchNotification : TchNotification = {
     ...currentTchNotification,
-        title: updateTchNotificationDto.title,
-    body: updateTchNotificationDto.body,
-    thumbnail: updateTchNotificationDto.thumbnail,
-    noti_type: updateTchNotificationDto.noti_type,
-    seen_by_users: updateTchNotificationDto.seen_by_users,
-    meta_data: updateTchNotificationDto.meta_data,
-  };
+  }
+
+      if (updateTchNotificationDto.title != undefined) { updateTchNotification.title = updateTchNotificationDto.title;}
+    if (updateTchNotificationDto.body != undefined) { updateTchNotification.body = updateTchNotificationDto.body;}
+    if (updateTchNotificationDto.thumbnail != undefined) { updateTchNotification.thumbnail = updateTchNotificationDto.thumbnail;}
+    if (updateTchNotificationDto.noti_type != undefined) { updateTchNotification.noti_type = updateTchNotificationDto.noti_type;}
+    if (updateTchNotificationDto.seen_by_users != undefined) { updateTchNotification.seen_by_users = updateTchNotificationDto.seen_by_users;}
+    if (updateTchNotificationDto.meta_data != undefined) { updateTchNotification.meta_data = updateTchNotificationDto.meta_data;}
+  
+  return updateTchNotification;
 }
 

@@ -1,167 +1,120 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FunctionError } from 'src/helper/common/error_app';
+import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
-import { ApiResponse, ResponseData } from '../../helper/common/interfaces';
-import { CreateMenuDto } from './dtos/create-menu.dto';
-import { UpdateMenuDto } from './dtos/update-menu.dto';
-import { Menu } from './entities/menu.entity';
+import { ApiResponse } from '../../helper/common/interfaces';
+import { CreateMenuDto, UpdateMenuDto } from './dtos/request';
+import {
+  DeleteMenuResponse,
+  entityToResponse,
+  MenuResponse,
+} from './dtos/response';
+import { Menu, MenuCreateInput, MenuUpdateInput } from './entities/menu.entity';
 
 @Injectable()
-export class MenuService {
+export class MenuService extends SharedService {
   constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
-  ) {}
+  ) {
+    super(MenuService.name);
+  }
 
-  private logger = new Logger(MenuService.name);
-
-  async createMenu(createMenuDto: CreateMenuDto): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
-      const menu = await this.menuRepository.save({
+  async createMenu(
+    createMenuDto: CreateMenuDto,
+  ): Promise<ApiResponse<MenuResponse>> {
+    return this.handleRequest(async () => {
+      const menuDto = MenuCreateInput({
         name: createMenuDto.name,
         description: createMenuDto.description,
         image: createMenuDto.image,
+        menuProducts: null,
       });
-      responseData.appData = menu;
-      responseData.hasError = false;
-      return {
-        status: HttpStatus.CREATED,
-        content: responseData,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: null,
-      };
-    }
+
+      const createdMenu = await this.menuRepository.save(menuDto);
+      return entityToResponse(createdMenu);
+    });
   }
 
-  async updateMenu(menuDto: UpdateMenuDto): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
+  async updateMenu(menuDto: UpdateMenuDto): Promise<ApiResponse<MenuResponse>> {
+    return this.handleRequest<MenuResponse>(async () => {
       const findMenu = await this.menuRepository.findOne({
         where: { id: menuDto.id, isDeleted: false },
       });
 
       if (!findMenu) {
-        responseData.message = 'Menu not found';
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          content: responseData,
-        };
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'Menu not found');
       }
 
-      const menu = await this.menuRepository.save(menuDto);
-      responseData.appData = menu;
-      responseData.hasError = false;
-      return {
-        status: HttpStatus.OK,
-        content: responseData,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: null,
-      };
-    }
+      const dto = MenuUpdateInput(findMenu, {
+        name: menuDto.name,
+        description: menuDto.description,
+        image: menuDto.image,
+      });
+
+      const updatedMenu = await this.menuRepository.save(dto);
+      return entityToResponse(updatedMenu);
+    });
   }
 
-  async getMenus(): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
+  async getMenus(): Promise<ApiResponse<MenuResponse[]>> {
+    return this.handleRequest(async () => {
       const menus = await this.menuRepository.find({
         where: { isDeleted: false },
       });
       if (!menus) {
-        responseData.message = 'Can not find menus';
-        return {
-          status: HttpStatus.OK,
-          content: responseData,
-        };
+        throw new FunctionError(HttpStatus.OK, 'Can not find menus');
       }
-      responseData.hasError = false;
-      responseData.appData = menus;
-      return {
-        status: HttpStatus.OK,
-        content: responseData,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: e,
-      };
-    }
+      return menus.map((e) => ({
+        id: e.id,
+        name: e.name,
+        image: e.image,
+        description: e.description,
+      }));
+    });
   }
 
-  async getOneMenu(menuId: string): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
+  async getOneMenu(menuId: string): Promise<ApiResponse<MenuResponse>> {
+    return this.handleRequest(async () => {
       const menu = await this.menuRepository.findOne({
         where: { id: menuId, isDeleted: false },
       });
+
       if (!menu) {
-        responseData.message = 'Can not find menu';
-        return {
-          status: HttpStatus.OK,
-          content: responseData,
-        };
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'Can not find menu');
       }
-      responseData.appData = menu;
-      responseData.hasError = false;
+
       return {
-        status: HttpStatus.OK,
-        content: responseData,
+        id: menu.id,
+        name: menu.name,
+        image: menu.image,
+        description: menu.description,
       };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: e,
-      };
-    }
+    });
   }
 
-  async delete(id: string): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
+  async delete(id: string): Promise<ApiResponse<DeleteMenuResponse>> {
+    return this.handleRequest<DeleteMenuResponse>(async () => {
       const menu = await this.menuRepository.findOne({
         where: { id, isDeleted: false },
       });
 
       if (!menu) {
-        responseData.message = 'Menu not exist';
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          content: responseData,
-        };
+        throw new FunctionError(HttpStatus.BAD_REQUEST, 'Menu not exist');
       }
       menu.isDeleted = true;
       menu.deletedDate = new Date();
 
       const deletedMenu = await this.menuRepository.save(menu);
-      if (!deletedMenu) {
-        responseData.message = 'Can not delete menu';
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          content: responseData,
-        };
-      }
 
-      responseData.appData = deletedMenu;
-      responseData.hasError = false;
       return {
-        status: HttpStatus.OK,
-        content: responseData,
+        id: deletedMenu.id,
+        name: deletedMenu.name,
+        image: deletedMenu.image,
+        description: deletedMenu.description,
+        isDeleted: deletedMenu.isDeleted,
+        deletedDate: deletedMenu.deletedDate,
       };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: e,
-      };
-    }
+    });
   }
 }

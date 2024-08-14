@@ -40,11 +40,11 @@ export class BasketService extends SharedService {
     if (baskets !== undefined && baskets !== null) {
       let basketList = baskets.map(
         (e) =>
-          <Basket>{
+          <BasketResponseDto>{
             id: e.id,
             mealId: e.mealId,
             quantity: e.quantity,
-            price: e.price,
+            price: +e.price,
             topping: JSON.parse(e.topping),
             userId: e.userId,
             mealCategory: e.mealCategory,
@@ -84,7 +84,7 @@ export class BasketService extends SharedService {
           id: basket.id,
           mealId: basket.mealId,
           quantity: basket.quantity,
-          price: basket.price,
+          price: +basket.price,
           topping: JSON.parse(basket.topping),
           userId: basket.userId,
           mealCategory: basket.mealCategory,

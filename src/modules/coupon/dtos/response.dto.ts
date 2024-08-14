@@ -1,6 +1,8 @@
-export class CheckUsageCouponResponse {
+export class VerifyOrderResponse {
   isValid: boolean;
   message?: string;
-  amountDiscount?: number;
-  amountTotal?: number;
+  foodCost: number;
+  discount?: number;
+  totalCost: number;
+  deliveryCost: number;
 }

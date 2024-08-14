@@ -55,18 +55,21 @@ export function PaymentCardCreateInput(createPaymentCardDto: {
 }
 
 export function PaymentCardUpdateInput(currentPaymentCard: PaymentCard, updatePaymentCardDto: {
-        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, issueNumber: string | null, billingAddressID: string | null
+        userId?: string, cardHolderName?: string, cardNumber?: string, cardType?: string, expirationDate?: Date, startDate?: Date, issueNumber?: string | null, billingAddressID?: string | null
     }): PaymentCard {
-  return {
+  const updatePaymentCard : PaymentCard = {
     ...currentPaymentCard,
-        userId: updatePaymentCardDto.userId,
-    cardHolderName: updatePaymentCardDto.cardHolderName,
-    cardNumber: updatePaymentCardDto.cardNumber,
-    cardType: updatePaymentCardDto.cardType,
-    expirationDate: updatePaymentCardDto.expirationDate,
-    startDate: updatePaymentCardDto.startDate,
-    issueNumber: updatePaymentCardDto.issueNumber,
-    billingAddressID: updatePaymentCardDto.billingAddressID,
-  };
+  }
+
+      if (updatePaymentCardDto.userId != undefined) { updatePaymentCard.userId = updatePaymentCardDto.userId;}
+    if (updatePaymentCardDto.cardHolderName != undefined) { updatePaymentCard.cardHolderName = updatePaymentCardDto.cardHolderName;}
+    if (updatePaymentCardDto.cardNumber != undefined) { updatePaymentCard.cardNumber = updatePaymentCardDto.cardNumber;}
+    if (updatePaymentCardDto.cardType != undefined) { updatePaymentCard.cardType = updatePaymentCardDto.cardType;}
+    if (updatePaymentCardDto.expirationDate != undefined) { updatePaymentCard.expirationDate = updatePaymentCardDto.expirationDate;}
+    if (updatePaymentCardDto.startDate != undefined) { updatePaymentCard.startDate = updatePaymentCardDto.startDate;}
+    if (updatePaymentCardDto.issueNumber != undefined) { updatePaymentCard.issueNumber = updatePaymentCardDto.issueNumber;}
+    if (updatePaymentCardDto.billingAddressID != undefined) { updatePaymentCard.billingAddressID = updatePaymentCardDto.billingAddressID;}
+  
+  return updatePaymentCard;
 }
 

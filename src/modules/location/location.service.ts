@@ -2,10 +2,13 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
-import { Location } from '../location/entities/location.entity';
+import {
+  Location,
+  LocationCreateInput,
+} from '../location/entities/location.entity';
 import { User } from '../user/entities/user.entity';
-import { CreateLocationDto } from './dtos/create-location.dto';
-import { UpdateLocationDto } from './dtos/update-location.dto';
+import { CreateLocationDto, UpdateLocationDto } from './dtos/request';
+import { DeleteLocationResponse, LocationResponse } from './dtos/response';
 
 @Injectable()
 export class LocationService {
@@ -16,8 +19,10 @@ export class LocationService {
   ) {}
   private logger = new Logger(LocationService.name);
 
-  async getLocationsByUser(user: User): Promise<ApiResponse<any>> {
-    const response = new ResponseData();
+  async getLocationsByUser(
+    user: User,
+  ): Promise<ApiResponse<LocationResponse[]>> {
+    const response = new ResponseData<LocationResponse[]>();
     try {
       const locations = await this.locationRepository.find({
         where: {
@@ -26,7 +31,18 @@ export class LocationService {
         },
       });
       response.hasError = false;
-      response.appData = locations;
+      response.appData = locations.map(
+        (e) =>
+          <LocationResponse>{
+            id: e.id,
+            address: e.address,
+            name: e.name,
+            latitude: +e.latitude,
+            longitude: +e.longitude,
+            ggPlaceId: e.ggPlaceId,
+            userId: e.userId,
+          },
+      );
       return {
         status: HttpStatus.OK,
         content: response,
@@ -44,8 +60,8 @@ export class LocationService {
     user: User,
     locationId: string,
     newLocation: UpdateLocationDto,
-  ): Promise<ApiResponse<any>> {
-    const response = new ResponseData();
+  ): Promise<ApiResponse<LocationResponse>> {
+    const response = new ResponseData<LocationResponse>();
     try {
       let location = await this.locationRepository.findOne({
         where: {
@@ -66,18 +82,26 @@ export class LocationService {
         ...location,
         address: newLocation.address,
         name: newLocation.name,
-        latitude: newLocation.latitude,
-        longitude: newLocation.longitude,
+        latitude: String(newLocation.latitude),
+        longitude: String(newLocation.longitude),
         ggPlaceId: newLocation.ggPlaceId,
       };
 
-      location = await this.locationRepository.save(location);
+      const updatedLocation = await this.locationRepository.save(location);
       if (!location) {
         throw new Error('Save fail update location');
       }
 
       response.hasError = false;
-      response.appData = location;
+      response.appData = {
+        id: updatedLocation.id,
+        address: updatedLocation.address,
+        name: updatedLocation.name,
+        latitude: +updatedLocation.latitude,
+        longitude: +updatedLocation.longitude,
+        ggPlaceId: updatedLocation.ggPlaceId,
+        userId: updatedLocation.userId,
+      };
       return {
         status: HttpStatus.OK,
         content: response,
@@ -94,24 +118,33 @@ export class LocationService {
   async addLocation(
     user: User,
     newLocation: CreateLocationDto,
-  ): Promise<ApiResponse<any>> {
-    const response = new ResponseData();
+  ): Promise<ApiResponse<LocationResponse>> {
+    const response = new ResponseData<LocationResponse>();
     try {
-      let location = new Location();
-      location.address = newLocation.address;
-      location.name = newLocation.name;
-      location.latitude = newLocation.latitude;
-      location.longitude = newLocation.longitude;
-      location.ggPlaceId = newLocation.ggPlaceId;
-      location.userId = user.id;
+      let location = LocationCreateInput({
+        address: newLocation.address,
+        ggPlaceId: newLocation.ggPlaceId,
+        latitude: newLocation.latitude.toString(),
+        longitude: newLocation.longitude.toString(),
+        userId: user.id,
+        name: newLocation.name,
+      });
 
-      location = await this.locationRepository.save(location);
+      const createdLocation = await this.locationRepository.save(location);
       if (!location) {
         throw new Error('Save fail create location');
       }
 
       response.hasError = false;
-      response.appData = location;
+      response.appData = {
+        id: createdLocation.id,
+        address: createdLocation.address,
+        name: createdLocation.name,
+        latitude: +createdLocation.latitude,
+        longitude: +createdLocation.longitude,
+        ggPlaceId: createdLocation.ggPlaceId,
+        userId: createdLocation.userId,
+      };
       return {
         status: HttpStatus.CREATED,
         content: response,
@@ -125,13 +158,17 @@ export class LocationService {
     }
   }
 
-  async getLocation(user: User, id: string): Promise<ApiResponse<any>> {
-    const response = new ResponseData();
+  async getLocation(
+    user: User,
+    id: string,
+  ): Promise<ApiResponse<LocationResponse>> {
+    const response = new ResponseData<LocationResponse>();
     try {
       const location = await this.locationRepository.findOne({
         where: {
           id: id,
           isDeleted: false,
+          userId: user.id,
         },
       });
       if (!location) {
@@ -139,7 +176,15 @@ export class LocationService {
       }
 
       response.hasError = false;
-      response.appData = location;
+      response.appData = {
+        id: location.id,
+        address: location.address,
+        name: location.name,
+        latitude: +location.latitude,
+        longitude: +location.longitude,
+        ggPlaceId: location.ggPlaceId,
+        userId: location.userId,
+      };
       return {
         status: HttpStatus.OK,
         content: response,
@@ -153,8 +198,11 @@ export class LocationService {
     }
   }
 
-  async deleteLocation(user: User, id: string): Promise<ApiResponse<any>> {
-    const response = new ResponseData();
+  async deleteLocation(
+    user: User,
+    id: string,
+  ): Promise<ApiResponse<DeleteLocationResponse>> {
+    const response = new ResponseData<DeleteLocationResponse>();
     try {
       let location = await this.locationRepository.findOne({
         where: {
@@ -175,7 +223,17 @@ export class LocationService {
       }
 
       response.hasError = false;
-      response.appData = location;
+      response.appData = {
+        id: location.id,
+        address: location.address,
+        name: location.name,
+        latitude: +location.latitude,
+        longitude: +location.longitude,
+        ggPlaceId: location.ggPlaceId,
+        userId: location.userId,
+        isDeleted: location.isDeleted,
+        deletedDate: location.deletedDate,
+      };
       return {
         status: HttpStatus.OK,
         content: response,

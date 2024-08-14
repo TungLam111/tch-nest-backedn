@@ -68,8 +68,8 @@ export class StoreService extends SharedService {
       store.address = createDto.address;
       store.name = createDto.name;
       store.contactPhone = createDto.contactPhone;
-      store.latitude = createDto.latitude;
-      store.longitude = createDto.longitude;
+      store.latitude = createDto.latitude.toString();
+      store.longitude = createDto.longitude.toString();
       store.ggPlaceId = createDto.ggPlaceId;
       store.timeSchedule = createDto.timeSchedule;
       store.images = JSON.stringify(createDto.images);
@@ -102,6 +102,8 @@ export class StoreService extends SharedService {
       let toUpdate: Store = {
         ...store,
         ...updateDto,
+        latitude: updateDto.latitude.toString(),
+        longitude: updateDto.longitude.toString(),
         images: JSON.stringify(updateDto.images),
       };
 

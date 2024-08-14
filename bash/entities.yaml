@@ -80,7 +80,7 @@ order:
       entityName: null
       referencedColumnName: null
     totalAmount: 
-      type: number
+      type: string
       relation: null
       entityName: null
       referencedColumnName: null
@@ -110,7 +110,7 @@ order:
       entityName: PaymentMethod
       referencedColumnName: id 
     discountAmount: 
-      type: number | nullable 
+      type: string | nullable 
       relation: null
       entityName: null
       referencedColumnName: null
@@ -217,7 +217,7 @@ coupon:
       entityName: null
       referencedColumnName: null
     minimumSpend: 
-      type: number | nullable 
+      type: string | nullable 
       relation: null
       entityName: null
       referencedColumnName: null
@@ -386,12 +386,12 @@ location:
       entityName: null  
       referencedColumnName: null
     latitude:
-      type: number
+      type: string
       relation: null 
       entityName: null  
       referencedColumnName: null 
     longitude:
-      type: number 
+      type: string 
       relation: null 
       entityName: null  
       referencedColumnName: null 
@@ -439,12 +439,12 @@ store:
       entityName: null
       referencedColumnName: null
     latitude:
-      type: number
+      type: string
       relation: null
       entityName: null
       referencedColumnName: null
     longitude:
-      type: number
+      type: string
       relation: null
       entityName: null
       referencedColumnName: null
@@ -473,7 +473,7 @@ topping-option:
       entityName: null
       referencedColumnName: null
     price:
-      type: number
+      type: string
       relation: null
       entityName: null
       referencedColumnName: null

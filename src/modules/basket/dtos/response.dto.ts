@@ -1,7 +1,5 @@
-import { Basket } from '../entities/basket.entity';
-
 export class BasketListResponseDto {
-  results: Basket[];
+  results: BasketResponseDto[];
   foodPrice: number;
 }
 
@@ -9,7 +7,7 @@ export class BasketResponseDto {
   id: string;
   mealId: string;
   quantity: number;
-  price: string;
+  price: number;
   topping: Record<string, number>;
   userId: string;
   mealCategory: string;

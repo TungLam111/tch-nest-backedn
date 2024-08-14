@@ -12,7 +12,7 @@ export class ToppingOption extends AbstractEntity {
   name: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column()
   toppingId: string;
@@ -25,7 +25,7 @@ export class ToppingOption extends AbstractEntity {
 
 
 export function ToppingOptionCreateInput(createToppingOptionDto: {
-        name: string, price: number, toppingId: string
+        name: string, price: string, toppingId: string
     }): ToppingOption {
   const createDto: ToppingOption = new ToppingOption();
     createDto.name = createToppingOptionDto.name;
@@ -35,13 +35,16 @@ export function ToppingOptionCreateInput(createToppingOptionDto: {
 }
 
 export function ToppingOptionUpdateInput(currentToppingOption: ToppingOption, updateToppingOptionDto: {
-        name: string, price: number, toppingId: string
+        name?: string, price?: string, toppingId?: string
     }): ToppingOption {
-  return {
+  const updateToppingOption : ToppingOption = {
     ...currentToppingOption,
-        name: updateToppingOptionDto.name,
-    price: updateToppingOptionDto.price,
-    toppingId: updateToppingOptionDto.toppingId,
-  };
+  }
+
+      if (updateToppingOptionDto.name != undefined) { updateToppingOption.name = updateToppingOptionDto.name;}
+    if (updateToppingOptionDto.price != undefined) { updateToppingOption.price = updateToppingOptionDto.price;}
+    if (updateToppingOptionDto.toppingId != undefined) { updateToppingOption.toppingId = updateToppingOptionDto.toppingId;}
+  
+  return updateToppingOption;
 }
 

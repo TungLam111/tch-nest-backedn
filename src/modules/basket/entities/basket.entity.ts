@@ -59,19 +59,22 @@ export function BasketCreateInput(createBasketDto: {
 }
 
 export function BasketUpdateInput(currentBasket: Basket, updateBasketDto: {
-        mealId: string, quantity: number | null, price: string, topping: string, userId: string, mealCategory: string | null, mealName: string | null, mealImage: string | null, isDone: boolean | null
+        mealId?: string, quantity?: number | null, price?: string, topping?: string, userId?: string, mealCategory?: string | null, mealName?: string | null, mealImage?: string | null, isDone?: boolean | null
     }): Basket {
-  return {
+  const updateBasket : Basket = {
     ...currentBasket,
-        mealId: updateBasketDto.mealId,
-    quantity: updateBasketDto.quantity,
-    price: updateBasketDto.price,
-    topping: updateBasketDto.topping,
-    userId: updateBasketDto.userId,
-    mealCategory: updateBasketDto.mealCategory,
-    mealName: updateBasketDto.mealName,
-    mealImage: updateBasketDto.mealImage,
-    isDone: updateBasketDto.isDone,
-  };
+  }
+
+      if (updateBasketDto.mealId != undefined) { updateBasket.mealId = updateBasketDto.mealId;}
+    if (updateBasketDto.quantity != undefined) { updateBasket.quantity = updateBasketDto.quantity;}
+    if (updateBasketDto.price != undefined) { updateBasket.price = updateBasketDto.price;}
+    if (updateBasketDto.topping != undefined) { updateBasket.topping = updateBasketDto.topping;}
+    if (updateBasketDto.userId != undefined) { updateBasket.userId = updateBasketDto.userId;}
+    if (updateBasketDto.mealCategory != undefined) { updateBasket.mealCategory = updateBasketDto.mealCategory;}
+    if (updateBasketDto.mealName != undefined) { updateBasket.mealName = updateBasketDto.mealName;}
+    if (updateBasketDto.mealImage != undefined) { updateBasket.mealImage = updateBasketDto.mealImage;}
+    if (updateBasketDto.isDone != undefined) { updateBasket.isDone = updateBasketDto.isDone;}
+  
+  return updateBasket;
 }
 

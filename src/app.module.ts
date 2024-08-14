@@ -83,6 +83,10 @@ export class AppModule implements NestModule {
           path: 'coupon',
           method: RequestMethod.POST,
         },
+        {
+          path: 'menu',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes('*');
   }

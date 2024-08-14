@@ -38,15 +38,18 @@ export function UserCreateInput(createUserDto: {
 }
 
 export function UserUpdateInput(currentUser: User, updateUserDto: {
-        email: string, password: string, name: string, phoneNumber: string | null, likeProducts: string | null
+        email?: string, password?: string, name?: string, phoneNumber?: string | null, likeProducts?: string | null
     }): User {
-  return {
+  const updateUser : User = {
     ...currentUser,
-        email: updateUserDto.email,
-    password: updateUserDto.password,
-    name: updateUserDto.name,
-    phoneNumber: updateUserDto.phoneNumber,
-    likeProducts: updateUserDto.likeProducts,
-  };
+  }
+
+      if (updateUserDto.email != undefined) { updateUser.email = updateUserDto.email;}
+    if (updateUserDto.password != undefined) { updateUser.password = updateUserDto.password;}
+    if (updateUserDto.name != undefined) { updateUser.name = updateUserDto.name;}
+    if (updateUserDto.phoneNumber != undefined) { updateUser.phoneNumber = updateUserDto.phoneNumber;}
+    if (updateUserDto.likeProducts != undefined) { updateUser.likeProducts = updateUserDto.likeProducts;}
+  
+  return updateUser;
 }
 

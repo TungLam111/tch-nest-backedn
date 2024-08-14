@@ -40,13 +40,16 @@ export function FeedbackCreateInput(createFeedbackDto: {
 }
 
 export function FeedbackUpdateInput(currentFeedback: Feedback, updateFeedbackDto: {
-        content: string | null, userId: string, orderId: string
+        content?: string | null, userId?: string, orderId?: string
     }): Feedback {
-  return {
+  const updateFeedback : Feedback = {
     ...currentFeedback,
-        content: updateFeedbackDto.content,
-    userId: updateFeedbackDto.userId,
-    orderId: updateFeedbackDto.orderId,
-  };
+  }
+
+      if (updateFeedbackDto.content != undefined) { updateFeedback.content = updateFeedbackDto.content;}
+    if (updateFeedbackDto.userId != undefined) { updateFeedback.userId = updateFeedbackDto.userId;}
+    if (updateFeedbackDto.orderId != undefined) { updateFeedback.orderId = updateFeedbackDto.orderId;}
+  
+  return updateFeedback;
 }
 

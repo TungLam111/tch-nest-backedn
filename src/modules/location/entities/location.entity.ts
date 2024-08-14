@@ -15,10 +15,10 @@ export class Location extends AbstractEntity {
   name: string;
 
   @Column()
-  latitude: number;
+  latitude: string;
 
   @Column()
-  longitude: number;
+  longitude: string;
 
   @Column()
   ggPlaceId: string;
@@ -34,7 +34,7 @@ export class Location extends AbstractEntity {
 
 
 export function LocationCreateInput(createLocationDto: {
-        address: string, name: string | null, latitude: number, longitude: number, ggPlaceId: string, userId: string
+        address: string, name: string | null, latitude: string, longitude: string, ggPlaceId: string, userId: string
     }): Location {
   const createDto: Location = new Location();
     createDto.address = createLocationDto.address;
@@ -47,16 +47,19 @@ export function LocationCreateInput(createLocationDto: {
 }
 
 export function LocationUpdateInput(currentLocation: Location, updateLocationDto: {
-        address: string, name: string | null, latitude: number, longitude: number, ggPlaceId: string, userId: string
+        address?: string, name?: string | null, latitude?: string, longitude?: string, ggPlaceId?: string, userId?: string
     }): Location {
-  return {
+  const updateLocation : Location = {
     ...currentLocation,
-        address: updateLocationDto.address,
-    name: updateLocationDto.name,
-    latitude: updateLocationDto.latitude,
-    longitude: updateLocationDto.longitude,
-    ggPlaceId: updateLocationDto.ggPlaceId,
-    userId: updateLocationDto.userId,
-  };
+  }
+
+      if (updateLocationDto.address != undefined) { updateLocation.address = updateLocationDto.address;}
+    if (updateLocationDto.name != undefined) { updateLocation.name = updateLocationDto.name;}
+    if (updateLocationDto.latitude != undefined) { updateLocation.latitude = updateLocationDto.latitude;}
+    if (updateLocationDto.longitude != undefined) { updateLocation.longitude = updateLocationDto.longitude;}
+    if (updateLocationDto.ggPlaceId != undefined) { updateLocation.ggPlaceId = updateLocationDto.ggPlaceId;}
+    if (updateLocationDto.userId != undefined) { updateLocation.userId = updateLocationDto.userId;}
+  
+  return updateLocation;
 }
 

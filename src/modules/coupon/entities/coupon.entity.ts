@@ -1,7 +1,12 @@
 import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
- ManyToOne, JoinColumn } from 'typeorm';
 import { User } from 'src/modules/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Coupon extends AbstractEntity {
@@ -24,7 +29,7 @@ export class Coupon extends AbstractEntity {
   expiryDate: Date;
 
   @Column({ nullable: true })
-  minimumSpend: number;
+  minimumSpend: string;
 
   @Column()
   isActive: boolean;
@@ -33,17 +38,22 @@ export class Coupon extends AbstractEntity {
   userId: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
-
 }
 
-
 export function CouponCreateInput(createCouponDto: {
-        code: string, couponType: string, description: string, discountPercentage: number | null, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
-    }): Coupon {
+  code: string;
+  couponType: string;
+  description: string;
+  discountPercentage: number | null;
+  expiryDate: Date;
+  minimumSpend: string | null;
+  isActive: boolean;
+  userId: string | null;
+}): Coupon {
   const createDto: Coupon = new Coupon();
-    createDto.code = createCouponDto.code;
+  createDto.code = createCouponDto.code;
   createDto.couponType = createCouponDto.couponType;
   createDto.description = createCouponDto.description;
   createDto.discountPercentage = createCouponDto.discountPercentage;
@@ -54,19 +64,47 @@ export function CouponCreateInput(createCouponDto: {
   return createDto;
 }
 
-export function CouponUpdateInput(currentCoupon: Coupon, updateCouponDto: {
-        code: string, couponType: string, description: string, discountPercentage: number | null, expiryDate: Date, minimumSpend: number | null, isActive: boolean, userId: string | null
-    }): Coupon {
-  return {
+export function CouponUpdateInput(
+  currentCoupon: Coupon,
+  updateCouponDto: {
+    code?: string;
+    couponType?: string;
+    description?: string;
+    discountPercentage?: number | null;
+    expiryDate?: Date;
+    minimumSpend?: string | null;
+    isActive?: boolean;
+    userId?: string | null;
+  },
+): Coupon {
+  const updateCoupon: Coupon = {
     ...currentCoupon,
-        code: updateCouponDto.code,
-    couponType: updateCouponDto.couponType,
-    description: updateCouponDto.description,
-    discountPercentage: updateCouponDto.discountPercentage,
-    expiryDate: updateCouponDto.expiryDate,
-    minimumSpend: updateCouponDto.minimumSpend,
-    isActive: updateCouponDto.isActive,
-    userId: updateCouponDto.userId,
   };
-}
 
+  if (updateCouponDto.code != undefined) {
+    updateCoupon.code = updateCouponDto.code;
+  }
+  if (updateCouponDto.couponType != undefined) {
+    updateCoupon.couponType = updateCouponDto.couponType;
+  }
+  if (updateCouponDto.description != undefined) {
+    updateCoupon.description = updateCouponDto.description;
+  }
+  if (updateCouponDto.discountPercentage != undefined) {
+    updateCoupon.discountPercentage = updateCouponDto.discountPercentage;
+  }
+  if (updateCouponDto.expiryDate != undefined) {
+    updateCoupon.expiryDate = updateCouponDto.expiryDate;
+  }
+  if (updateCouponDto.minimumSpend != undefined) {
+    updateCoupon.minimumSpend = updateCouponDto.minimumSpend;
+  }
+  if (updateCouponDto.isActive != undefined) {
+    updateCoupon.isActive = updateCouponDto.isActive;
+  }
+  if (updateCouponDto.userId != undefined) {
+    updateCoupon.userId = updateCouponDto.userId;
+  }
+
+  return updateCoupon;
+}

@@ -36,12 +36,15 @@ export function MenuProductCreateInput(createMenuProductDto: {
 }
 
 export function MenuProductUpdateInput(currentMenuProduct: MenuProduct, updateMenuProductDto: {
-        menuId: string, productId: string
+        menuId?: string, productId?: string
     }): MenuProduct {
-  return {
+  const updateMenuProduct : MenuProduct = {
     ...currentMenuProduct,
-        menuId: updateMenuProductDto.menuId,
-    productId: updateMenuProductDto.productId,
-  };
+  }
+
+      if (updateMenuProductDto.menuId != undefined) { updateMenuProduct.menuId = updateMenuProductDto.menuId;}
+    if (updateMenuProductDto.productId != undefined) { updateMenuProduct.productId = updateMenuProductDto.productId;}
+  
+  return updateMenuProduct;
 }
 

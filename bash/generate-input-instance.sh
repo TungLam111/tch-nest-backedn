@@ -215,9 +215,9 @@ write_to_file() {
         
         # Construct the input field definition
         if $is_nullable; then
-            updateInput+="${fields[$i]}: ${primary_type} | null, "
+            updateInput+="${fields[$i]}?: ${primary_type} | null, "
         else
-            updateInput+="${fields[$i]}: ${primary_type}, "
+            updateInput+="${fields[$i]}?: ${primary_type}, "
         fi
     done
     
@@ -238,10 +238,13 @@ export function ${current_entity}CreateInput(create${current_entity}Dto: $create
 }
 
 export function ${current_entity}UpdateInput(current${current_entity}: ${current_entity}, update${current_entity}Dto: $updateInput): ${current_entity} {
-  return {
+  const update${current_entity} : ${current_entity} = {
     ...current${current_entity},
-    $(for f in "${fields[@]}"; do echo "    $f: update${current_entity}Dto.$f,"; done)
-  };
+  }
+
+  $(for f in "${fields[@]}"; do echo "    if (update${current_entity}Dto.$f != undefined) { update${current_entity}.$f = update${current_entity}Dto.$f;}"; done)
+  
+  return update${current_entity};
 }
 " >> "$entity_file"
 }

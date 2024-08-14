@@ -9,6 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthenticatedRoleRequest } from 'src/core/middleware/auth-user';
+import { VerifyOrderRequest } from '../coupon/dtos/request.dto';
 import {
   CancelOrderRequest,
   CreateOrderRequest,
@@ -80,6 +81,19 @@ export class OrderController {
       {
         ...requestBody,
       },
+    );
+    res.status(result.status).json(result.content);
+  }
+
+  @Post('check')
+  async useCoupon(
+    @Res() res: any,
+    @Req() req: AuthenticatedRoleRequest,
+    @Body() requestBody: VerifyOrderRequest,
+  ) {
+    const result = await this.orderService.verifyOrder(
+      req.user.user.id,
+      requestBody,
     );
     res.status(result.status).json(result.content);
   }

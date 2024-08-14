@@ -6,6 +6,7 @@ export class ApiResponse<T> {
 }
 
 export class ResponseData<T> {
+  [x: string]: {};
   hasError: boolean = true;
   errorCode: string = '';
   message: string = '';

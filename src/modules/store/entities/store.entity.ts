@@ -17,10 +17,10 @@ export class Store extends AbstractEntity {
   address: string;
 
   @Column()
-  latitude: number;
+  latitude: string;
 
   @Column()
-  longitude: number;
+  longitude: string;
 
   @Column()
   ggPlaceId: string;
@@ -35,7 +35,7 @@ export class Store extends AbstractEntity {
 
 
 export function StoreCreateInput(createStoreDto: {
-        name: string, contactPhone: string, address: string, latitude: number, longitude: number, ggPlaceId: string, timeSchedule: string, images: string | null
+        name: string, contactPhone: string, address: string, latitude: string, longitude: string, ggPlaceId: string, timeSchedule: string, images: string | null
     }): Store {
   const createDto: Store = new Store();
     createDto.name = createStoreDto.name;
@@ -50,18 +50,21 @@ export function StoreCreateInput(createStoreDto: {
 }
 
 export function StoreUpdateInput(currentStore: Store, updateStoreDto: {
-        name: string, contactPhone: string, address: string, latitude: number, longitude: number, ggPlaceId: string, timeSchedule: string, images: string | null
+        name?: string, contactPhone?: string, address?: string, latitude?: string, longitude?: string, ggPlaceId?: string, timeSchedule?: string, images?: string | null
     }): Store {
-  return {
+  const updateStore : Store = {
     ...currentStore,
-        name: updateStoreDto.name,
-    contactPhone: updateStoreDto.contactPhone,
-    address: updateStoreDto.address,
-    latitude: updateStoreDto.latitude,
-    longitude: updateStoreDto.longitude,
-    ggPlaceId: updateStoreDto.ggPlaceId,
-    timeSchedule: updateStoreDto.timeSchedule,
-    images: updateStoreDto.images,
-  };
+  }
+
+      if (updateStoreDto.name != undefined) { updateStore.name = updateStoreDto.name;}
+    if (updateStoreDto.contactPhone != undefined) { updateStore.contactPhone = updateStoreDto.contactPhone;}
+    if (updateStoreDto.address != undefined) { updateStore.address = updateStoreDto.address;}
+    if (updateStoreDto.latitude != undefined) { updateStore.latitude = updateStoreDto.latitude;}
+    if (updateStoreDto.longitude != undefined) { updateStore.longitude = updateStoreDto.longitude;}
+    if (updateStoreDto.ggPlaceId != undefined) { updateStore.ggPlaceId = updateStoreDto.ggPlaceId;}
+    if (updateStoreDto.timeSchedule != undefined) { updateStore.timeSchedule = updateStoreDto.timeSchedule;}
+    if (updateStoreDto.images != undefined) { updateStore.images = updateStoreDto.images;}
+  
+  return updateStore;
 }
 

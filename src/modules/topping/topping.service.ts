@@ -2,9 +2,9 @@ import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
+import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 import { AddToppingOptionDto } from './dtos/add-topping-option.dto';
 import { Topping } from './entities/topping.entity';
-import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 
 @Injectable()
 export class ToppingService {
@@ -109,7 +109,7 @@ export class ToppingService {
 
       const result = await this.toppingOptionRepository.save({
         toppingId: dto.toppingId,
-        price: dto.toppingOptionPrice,
+        price: dto.toppingOptionPrice.toString(),
         name: dto.toppingOptionName,
       });
 

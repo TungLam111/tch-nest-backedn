@@ -35,14 +35,17 @@ export function MenuCreateInput(createMenuDto: {
 }
 
 export function MenuUpdateInput(currentMenu: Menu, updateMenuDto: {
-        name: string, image: string | null, description: string, menuProducts: MenuProduct[]
+        name?: string, image?: string | null, description?: string, menuProducts?: MenuProduct[]
     }): Menu {
-  return {
+  const updateMenu : Menu = {
     ...currentMenu,
-        name: updateMenuDto.name,
-    image: updateMenuDto.image,
-    description: updateMenuDto.description,
-    menuProducts: updateMenuDto.menuProducts,
-  };
+  }
+
+      if (updateMenuDto.name != undefined) { updateMenu.name = updateMenuDto.name;}
+    if (updateMenuDto.image != undefined) { updateMenu.image = updateMenuDto.image;}
+    if (updateMenuDto.description != undefined) { updateMenu.description = updateMenuDto.description;}
+    if (updateMenuDto.menuProducts != undefined) { updateMenu.menuProducts = updateMenuDto.menuProducts;}
+  
+  return updateMenu;
 }
 

@@ -47,17 +47,20 @@ export function ToppingCreateInput(createToppingDto: {
 }
 
 export function ToppingUpdateInput(currentTopping: Topping, updateToppingDto: {
-        name: string, description: string, toppingType: string, isRequired: boolean, maxSelect: number, minSelect: number, options: ToppingOption[]
+        name?: string, description?: string, toppingType?: string, isRequired?: boolean, maxSelect?: number, minSelect?: number, options?: ToppingOption[]
     }): Topping {
-  return {
+  const updateTopping : Topping = {
     ...currentTopping,
-        name: updateToppingDto.name,
-    description: updateToppingDto.description,
-    toppingType: updateToppingDto.toppingType,
-    isRequired: updateToppingDto.isRequired,
-    maxSelect: updateToppingDto.maxSelect,
-    minSelect: updateToppingDto.minSelect,
-    options: updateToppingDto.options,
-  };
+  }
+
+      if (updateToppingDto.name != undefined) { updateTopping.name = updateToppingDto.name;}
+    if (updateToppingDto.description != undefined) { updateTopping.description = updateToppingDto.description;}
+    if (updateToppingDto.toppingType != undefined) { updateTopping.toppingType = updateToppingDto.toppingType;}
+    if (updateToppingDto.isRequired != undefined) { updateTopping.isRequired = updateToppingDto.isRequired;}
+    if (updateToppingDto.maxSelect != undefined) { updateTopping.maxSelect = updateToppingDto.maxSelect;}
+    if (updateToppingDto.minSelect != undefined) { updateTopping.minSelect = updateToppingDto.minSelect;}
+    if (updateToppingDto.options != undefined) { updateTopping.options = updateToppingDto.options;}
+  
+  return updateTopping;
 }
 

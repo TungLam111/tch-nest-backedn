@@ -1,21 +1,9 @@
-export class CreateOrderDto {
-  orderType: string;
+import { VerifyOrderRequest } from 'src/modules/coupon/dtos/request.dto';
 
-  couponId: string;
-
-  paymentCardId: string | null;
-
-  paymentMethodId: string;
-
+export class CreateOrderDto extends VerifyOrderRequest {
   note: string;
 
   shipAddress: string;
-
-  locationId: string;
-
-  latitude: number;
-
-  longitude: number;
 }
 
 export class UpdateStatusOrderDto {

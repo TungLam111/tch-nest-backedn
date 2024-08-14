@@ -36,12 +36,15 @@ export function ProductToppingCreateInput(createProductToppingDto: {
 }
 
 export function ProductToppingUpdateInput(currentProductTopping: ProductTopping, updateProductToppingDto: {
-        productId: string, toppingId: string
+        productId?: string, toppingId?: string
     }): ProductTopping {
-  return {
+  const updateProductTopping : ProductTopping = {
     ...currentProductTopping,
-        productId: updateProductToppingDto.productId,
-    toppingId: updateProductToppingDto.toppingId,
-  };
+  }
+
+      if (updateProductToppingDto.productId != undefined) { updateProductTopping.productId = updateProductToppingDto.productId;}
+    if (updateProductToppingDto.toppingId != undefined) { updateProductTopping.toppingId = updateProductToppingDto.toppingId;}
+  
+  return updateProductTopping;
 }
 

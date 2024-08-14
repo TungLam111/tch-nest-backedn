@@ -20,7 +20,7 @@ export class PaymentCardService extends SharedService {
   ) {
     super(PaymentCardService.name);
   }
-  async getAll(userId: string): Promise<ApiResponse<any>> {
+  async getAll(userId: string): Promise<ApiResponse<PaymentCard[]>> {
     return this.handleRequest<PaymentCard[]>(async () => {
       const cards = await this.paymentCardService.find({
         where: {
@@ -32,7 +32,10 @@ export class PaymentCardService extends SharedService {
     });
   }
 
-  async getOne(userId: string, cardId: string): Promise<ApiResponse<any>> {
+  async getOne(
+    userId: string,
+    cardId: string,
+  ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
       const card = await this.paymentCardService.findOne({
         where: {
@@ -48,7 +51,7 @@ export class PaymentCardService extends SharedService {
   async create(
     userId: string,
     createPaymentCardDto: CreatePaymentCardDto,
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
       const findCard = await this.paymentCardService.findOne({
         where: {
@@ -78,7 +81,7 @@ export class PaymentCardService extends SharedService {
     userId: string,
     cardId: string,
     dto: UpdatePaymentCardDto,
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
       const findCard = await this.paymentCardService.findOne({
         where: {
@@ -98,7 +101,10 @@ export class PaymentCardService extends SharedService {
     });
   }
 
-  async delete(userId: string, cardId: string): Promise<ApiResponse<any>> {
+  async delete(
+    userId: string,
+    cardId: string,
+  ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
       const findCard = await this.paymentCardService.findOne({
         where: {

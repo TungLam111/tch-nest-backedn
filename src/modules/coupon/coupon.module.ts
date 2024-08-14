@@ -8,6 +8,6 @@ import { Coupon } from './entities/coupon.entity';
 @Module({
   controllers: [CouponController],
   providers: [CouponService],
-  imports: [TypeOrmModule.forFeature([Coupon]), BasketModule],
+  imports: [TypeOrmModule.forFeature([Coupon])],
 })
 export class CouponModule {}

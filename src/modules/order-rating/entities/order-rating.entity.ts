@@ -22,11 +22,14 @@ export function OrderRatingCreateInput(createOrderRatingDto: {
 }
 
 export function OrderRatingUpdateInput(currentOrderRating: OrderRating, updateOrderRatingDto: {
-        content: string
+        content?: string
     }): OrderRating {
-  return {
+  const updateOrderRating : OrderRating = {
     ...currentOrderRating,
-        content: updateOrderRatingDto.content,
-  };
+  }
+
+      if (updateOrderRatingDto.content != undefined) { updateOrderRating.content = updateOrderRatingDto.content;}
+  
+  return updateOrderRating;
 }
 

@@ -1,5 +1,11 @@
-export class CheckUsageCouponRequest {
-  amountDelivery?: number;
+export class VerifyOrderRequest {
+  latitude?: number;
+  longitude?: number;
+  couponId?: string;
+  orderType: string;
+  paymentCardId?: string;
+  paymentMethodId: string;
+  locationId?: string;
 }
 
 export class AddCouponRequest {

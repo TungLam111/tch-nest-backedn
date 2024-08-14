@@ -10,8 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthenticatedRoleRequest } from 'src/core/middleware/auth-user';
-import { CreateLocationDto } from './dtos/create-location.dto';
-import { UpdateLocationDto } from './dtos/update-location.dto';
+import { CreateLocationDto, UpdateLocationDto } from './dtos/request';
 import { LocationService } from './location.service';
 
 @Controller('location')

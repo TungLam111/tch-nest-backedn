@@ -6,7 +6,8 @@ import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { Order } from '../order/entities/order.entity';
 import { User } from '../user/entities/user.entity';
-import { CreateFeedbackDto } from './dtos/create-feedback.dto';
+import { CreateFeedbackDto } from './dtos/request';
+import { DeleteFeedbackResponse, FeedbackResponse } from './dtos/response';
 import { Feedback } from './entities/feedback.entity';
 
 @Injectable()
@@ -19,8 +20,8 @@ export class FeedbackService extends SharedService {
     super(FeedbackService.name);
   }
 
-  async getAllFeedbacks(user: User): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  async getAllFeedbacks(user: User): Promise<ApiResponse<FeedbackResponse[]>> {
+    return this.handleRequest<FeedbackResponse[]>(async () => {
       const feedbacks = await this.feedbackRepo.find({
         where: {
           isDeleted: false,
@@ -30,15 +31,20 @@ export class FeedbackService extends SharedService {
           updatedAt: 'ASC',
         },
       });
-      return feedbacks;
+      return feedbacks.map((e) => ({
+        id: e.id,
+        content: e.content,
+        userId: e.userId,
+        orderId: e.orderId,
+      }));
     });
   }
 
   async createNewFeedback(
     user: User,
     createFeedbackDto: CreateFeedbackDto,
-  ): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  ): Promise<ApiResponse<FeedbackResponse>> {
+    return this.handleRequest<FeedbackResponse>(async () => {
       const checkOrder = await this.orderRepo.findOne({
         where: {
           isDeleted: false,
@@ -61,16 +67,25 @@ export class FeedbackService extends SharedService {
           'Fail to create feedback',
         );
       }
-      return feedback;
+      return {
+        id: feedback.id,
+        content: feedback.content,
+        userId: feedback.userId,
+        orderId: feedback.orderId,
+      };
     }, HttpStatus.CREATED);
   }
 
-  async delete(user: User, feedbackId: string): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  async delete(
+    user: User,
+    feedbackId: string,
+  ): Promise<ApiResponse<DeleteFeedbackResponse>> {
+    return this.handleRequest<DeleteFeedbackResponse>(async () => {
       let deleteFeedBack = await this.feedbackRepo.findOne({
         where: {
           isDeleted: false,
           id: feedbackId,
+          userId: user.id,
         },
       });
       if (!deleteFeedBack) {
@@ -87,7 +102,14 @@ export class FeedbackService extends SharedService {
           'Fail to delete feedback',
         );
       }
-      return deleteFeedBack;
+      return {
+        id: deleteFeedBack.id,
+        content: deleteFeedBack.content,
+        isDeleted: deleteFeedBack.isDeleted,
+        deletedDate: deleteFeedBack.deletedDate,
+        userId: deleteFeedBack.userId,
+        orderId: deleteFeedBack.orderId,
+      };
     });
   }
 }
