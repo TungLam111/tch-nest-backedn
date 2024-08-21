@@ -1,8 +1,11 @@
-export class VerifyOrderResponse {
-  isValid: boolean;
-  message?: string;
-  foodCost: number;
-  discount?: number;
-  totalCost: number;
-  deliveryCost: number;
+export class CouponResponse {
+  id: string;
+  code: string;
+  couponType: string;
+  description: string;
+  discountPercentage: number;
+  expiryDate: Date;
+  minimumSpend: number;
+  isActive: boolean;
+  userId: string;
 }

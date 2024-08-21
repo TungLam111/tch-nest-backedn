@@ -8,13 +8,13 @@ import { IsNull, Repository } from 'typeorm';
 import { BasketService } from '../basket/basket.service';
 import { BasketListResponseDto } from '../basket/dtos/response.dto';
 import { VerifyOrderRequest } from '../coupon/dtos/request.dto';
-import { VerifyOrderResponse } from '../coupon/dtos/response.dto';
 import { Coupon } from '../coupon/entities/coupon.entity';
 import {
   CancelOrderDto,
   CreateOrderDto,
   UpdateStatusOrderDto,
 } from './dtos/internal.dto';
+import { VerifyOrderResponse } from './dtos/response';
 import { Order, OrderCreateInput } from './entities/order.entity';
 
 @Injectable()
@@ -233,8 +233,9 @@ export class OrderService extends SharedService {
     }
 
     const basketListInfo = await this.basketService.getAllRecentBaskets(userId);
-    if (!basketListInfo || basketListInfo.results.length === 0)
+    if (!basketListInfo || basketListInfo.results.length === 0) {
       throw new FunctionError(HttpStatus.BAD_REQUEST, 'Basket list is empty');
+    }
 
     let amountDelivery = await this.getDeliveryCost(
       dto.latitude,
@@ -259,31 +260,32 @@ export class OrderService extends SharedService {
       }
 
       if (coupon.couponType === CouponType[CouponType.discount]) {
-        if (coupon.minimumSpend && coupon.discountPercentage) {
-          if (basketListInfo.foodPrice >= +coupon.minimumSpend) {
+        if (coupon.discountPercentage) {
+          if (+coupon.minimumSpend) {
+            if (basketListInfo.foodPrice >= +coupon.minimumSpend) {
+              amountCoupon =
+                (basketListInfo.foodPrice * coupon.discountPercentage) / 100;
+              totalPriceAfterCoupon = totalPriceAfterCoupon - amountCoupon;
+            } else {
+              return {
+                isValid: false,
+                message: 'Total food price is not enough to use coupon',
+                foodCost: basketListInfo.foodPrice,
+                totalCost: totalPriceAfterCoupon,
+                deliveryCost: amountDelivery,
+                discount: 0,
+                basket: basketListInfo,
+              };
+            }
+          } else {
             amountCoupon =
               (basketListInfo.foodPrice * coupon.discountPercentage) / 100;
             totalPriceAfterCoupon = totalPriceAfterCoupon - amountCoupon;
-          } else {
-            return {
-              isValid: false,
-              message: 'Total food price is not enough to use coupon',
-              foodCost: basketListInfo.foodPrice,
-              totalCost: totalPriceAfterCoupon,
-              deliveryCost: amountDelivery,
-              discount: 0,
-              basket: basketListInfo,
-            };
           }
-        } else {
-          throw new FunctionError(
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            'Something wrong. We are checking',
-          );
         }
       } else {
-        totalPriceAfterCoupon = totalPriceAfterCoupon - amountDelivery;
         amountCoupon = amountDelivery;
+        totalPriceAfterCoupon = totalPriceAfterCoupon - amountDelivery;
       }
     }
 

@@ -34,8 +34,6 @@ export class OrderController {
     @Param('id') orderId: string,
   ) {
     const result = await this.orderService.getOne(req.user.user.id, orderId);
-
-    console.log(JSON.stringify(result.content));
     res.status(result.status).json(result.content);
   }
 
