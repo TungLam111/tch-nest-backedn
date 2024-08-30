@@ -1,6 +1,5 @@
 import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
-  } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Product extends AbstractEntity {
@@ -18,33 +17,50 @@ export class Product extends AbstractEntity {
 
   @Column()
   basePrice: number;
-
 }
 
-
 export function ProductCreateInput(createProductDto: {
-        name: string, images: string, description: string, basePrice: number
-    }): Product {
+  name: string;
+  images: string;
+  description: string;
+  basePrice: number;
+}): Product {
   const createDto: Product = new Product();
-    createDto.name = createProductDto.name;
+  createDto.name = createProductDto.name;
   createDto.images = createProductDto.images;
   createDto.description = createProductDto.description;
   createDto.basePrice = createProductDto.basePrice;
   return createDto;
 }
 
-export function ProductUpdateInput(currentProduct: Product, updateProductDto: {
-        name?: string, images?: string, description?: string, basePrice?: number
-    }): Product {
-  const updateProduct : Product = {
+export function ProductUpdateInput({
+  currentProduct,
+  updateProductDto,
+}: {
+  currentProduct: Product;
+  updateProductDto: {
+    name?: string;
+    images?: string;
+    description?: string;
+    basePrice?: number;
+  };
+}): Product {
+  const updateProduct: Product = {
     ...currentProduct,
+  };
+
+  if (updateProductDto.name != undefined) {
+    updateProduct.name = updateProductDto.name;
+  }
+  if (updateProductDto.images != undefined) {
+    updateProduct.images = updateProductDto.images;
+  }
+  if (updateProductDto.description != undefined) {
+    updateProduct.description = updateProductDto.description;
+  }
+  if (updateProductDto.basePrice != undefined) {
+    updateProduct.basePrice = updateProductDto.basePrice;
   }
 
-      if (updateProductDto.name != undefined) { updateProduct.name = updateProductDto.name;}
-    if (updateProductDto.images != undefined) { updateProduct.images = updateProductDto.images;}
-    if (updateProductDto.description != undefined) { updateProduct.description = updateProductDto.description;}
-    if (updateProductDto.basePrice != undefined) { updateProduct.basePrice = updateProductDto.basePrice;}
-  
   return updateProduct;
 }
-

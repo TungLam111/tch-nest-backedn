@@ -1,23 +1,24 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
+import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 import { AddToppingOptionDto } from './dtos/add-topping-option.dto';
 import { Topping } from './entities/topping.entity';
 
 @Injectable()
-export class ToppingService {
+export class ToppingService extends SharedService {
   constructor(
     @InjectRepository(Topping) private toppingRepository: Repository<Topping>,
     @InjectRepository(ToppingOption)
     private toppingOptionRepository: Repository<ToppingOption>,
-  ) {}
-  private logger = new Logger(ToppingService.name);
+  ) {
+    super(ToppingService.name);
+  }
 
   async getAllToppings(): Promise<ApiResponse<any>> {
-    const responseData = new ResponseData();
-    try {
+    return this.handleRequest<any>(async () => {
       const queryBuilder = this.toppingOptionRepository
         .createQueryBuilder('topping_option')
         .leftJoinAndSelect('topping_option.topping', 'topping')
@@ -72,19 +73,8 @@ export class ToppingService {
       }, {});
 
       const toppingsWithGroupedOptions = Object.values(groupedToppings);
-      responseData.appData = toppingsWithGroupedOptions;
-      responseData.hasError = false;
-      return {
-        status: HttpStatus.OK,
-        content: responseData,
-      };
-    } catch (e) {
-      this.logger.error(e);
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        content: null,
-      };
-    }
+      return toppingsWithGroupedOptions;
+    });
   }
 
   async addToppingOption(

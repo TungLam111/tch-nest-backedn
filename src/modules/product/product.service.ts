@@ -4,18 +4,27 @@ import { FunctionError } from 'src/helper/common/error_app';
 import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { ApiResponse } from '../../helper/common/interfaces';
+import {
+  MenuProduct,
+  MenuProductCreateInput,
+} from '../menu-product/entities/menu-product.entity';
 import { Menu } from '../menu/entities/menu.entity';
-import { MenuService } from '../menu/menu.service';
-import { Topping } from '../topping/entities/topping.entity';
-import { AddProductToMenuDto } from './dtos/add-product-menu.dto';
-import { CreateProductDto } from './dtos/create-product.dto';
-import { DeleteProductDto } from './dtos/delete-product.dto';
-import { SearchProductDto } from './dtos/search-product.dto';
-import { UpdateProductDto } from './dtos/update-product.dto';
-import { Product } from './entities/product.entity';
-import { MenuProduct } from '../menu-product/entities/menu-product.entity';
 import { ProductTopping } from '../product-topping/entities/product-topping.entity';
-import { ToppingOption } from '../topping-option/entities/topping-option.entity';
+import {
+  AddProductToMenuDto,
+  CreateProductRequestDto,
+  DeleteProductDto,
+  SearchProductDto,
+  UpdateProductRequestDto,
+} from './dtos/request';
+
+import {
+  AddMenuProductResponseDto,
+  MenusWithProductsResponseDto,
+  ProductDetailResponseDto,
+  SearchProductResponseDto,
+} from './dtos/response';
+import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService extends SharedService {
@@ -27,17 +36,14 @@ export class ProductService extends SharedService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(ProductTopping)
     private readonly productToppingRepository: Repository<ProductTopping>,
-    @InjectRepository(Topping)
-    private readonly toppingRepository: Repository<Topping>,
-    @InjectRepository(ToppingOption)
-    private readonly toppingOptionRepository: Repository<ToppingOption>,
-    private menuService: MenuService,
   ) {
     super(ProductService.name);
   }
 
-  async getProductsWithMenu(): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  async getProductsWithMenu(): Promise<
+    ApiResponse<MenusWithProductsResponseDto[]>
+  > {
+    return this.handleRequest<MenusWithProductsResponseDto[]>(async () => {
       let menusWithProducts = await this.menuRepository
         .createQueryBuilder('menu')
         .leftJoinAndSelect('menu.menuProducts', 'menu_product')
@@ -54,8 +60,8 @@ export class ProductService extends SharedService {
 
   async searchProduct(
     searchQuery: SearchProductDto,
-  ): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  ): Promise<ApiResponse<SearchProductResponseDto[]>> {
+    return this.handleRequest<SearchProductResponseDto[]>(async () => {
       const queryBuilder = this.productRepository
         .createQueryBuilder('product')
         .select([
@@ -75,7 +81,15 @@ export class ProductService extends SharedService {
       }
 
       const result = await queryBuilder.getRawMany();
-      return result;
+      return result.map((e) => ({
+        createdAt: e.createdAt,
+        updatedAt: e.updatedAt,
+        id: e.id,
+        name: e.name,
+        images: e.images,
+        description: e.description,
+        basePrice: e.basePrice,
+      }));
     });
   }
 
@@ -84,10 +98,12 @@ export class ProductService extends SharedService {
         - id
     @return:
         - product
-        - product topping
-    */
-  async getProductDetail(id: string): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+        - toppings
+  */
+  async getProductDetail(
+    id: string,
+  ): Promise<ApiResponse<ProductDetailResponseDto>> {
+    return this.handleRequest<ProductDetailResponseDto>(async () => {
       const product = await this.productRepository.findOne({
         where: { isDeleted: false, id: id },
       });
@@ -105,10 +121,8 @@ export class ProductService extends SharedService {
         .getMany();
 
       return {
-        product: {
-          ...product,
-          toppings: productTopping,
-        },
+        product: product,
+        toppings: productTopping,
       };
     });
   }
@@ -121,7 +135,9 @@ export class ProductService extends SharedService {
         - basePrice
         - toppings : topping id list
     */
-  async addProduct(productDto: CreateProductDto): Promise<ApiResponse<any>> {
+  async addProduct(
+    productDto: CreateProductRequestDto,
+  ): Promise<ApiResponse<ProductDetailResponseDto>> {
     return this.handleRequest(async () => {
       const newProduct = await this.productRepository.save({
         name: productDto.name,
@@ -150,10 +166,8 @@ export class ProductService extends SharedService {
       }
 
       return {
-        product: {
-          ...newProduct,
-          toppings: toppings,
-        },
+        product: newProduct,
+        toppings: toppings,
       };
     }, HttpStatus.CREATED);
   }
@@ -168,9 +182,9 @@ export class ProductService extends SharedService {
         - toppings : topping id list
     */
   async updateProduct(
-    updateProductDto: UpdateProductDto,
-  ): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+    updateProductDto: UpdateProductRequestDto,
+  ): Promise<ApiResponse<ProductDetailResponseDto>> {
+    return this.handleRequest<ProductDetailResponseDto>(async () => {
       const product = await this.productRepository.findOne({
         where: { isDeleted: false, id: updateProductDto.id },
       });
@@ -231,10 +245,8 @@ export class ProductService extends SharedService {
         await this.productToppingRepository.save(currentToppings);
 
       return {
-        product: {
-          ...updateProduct,
-          toppings: [...updatedToppings],
-        },
+        product: updateProduct,
+        toppings: [...updatedToppings],
       };
     });
   }
@@ -243,9 +255,11 @@ export class ProductService extends SharedService {
     @params:
         - menuId
         - productId
-    */
-  async addProductToMenu(dto: AddProductToMenuDto): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  */
+  async addProductToMenu(
+    dto: AddProductToMenuDto,
+  ): Promise<ApiResponse<AddMenuProductResponseDto>> {
+    return this.handleRequest<AddMenuProductResponseDto>(async () => {
       const menuId = dto.menuId;
       const productId = dto.productId;
 
@@ -263,10 +277,13 @@ export class ProductService extends SharedService {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Product not found');
       }
 
-      const addMenuProduct = await this.menuProductRepository.save({
+      const menuProductInput = MenuProductCreateInput({
         menuId: menuId,
         productId: productId,
       });
+
+      const addMenuProduct =
+        await this.menuProductRepository.save(menuProductInput);
 
       if (!addMenuProduct) {
         throw new FunctionError(
@@ -274,15 +291,22 @@ export class ProductService extends SharedService {
           'Can not add this product to menu',
         );
       }
+
+      return {
+        menuId: addMenuProduct.menuId,
+        productId: addMenuProduct.productId,
+      };
     });
   }
 
   /*
     @params:
         - id
-    */
-  async deleteProduct(product: DeleteProductDto): Promise<ApiResponse<any>> {
-    return this.handleRequest(async () => {
+  */
+  async deleteProduct(
+    product: DeleteProductDto,
+  ): Promise<ApiResponse<Product>> {
+    return this.handleRequest<Product>(async () => {
       const checkProduct = await this.productRepository.findOne({
         where: { isDeleted: false, id: product.id },
       });
@@ -329,7 +353,7 @@ export class ProductService extends SharedService {
           'Can not delete product topping linked to product',
         );
       }
-      return null;
+      return deletedProduct;
     });
   }
 

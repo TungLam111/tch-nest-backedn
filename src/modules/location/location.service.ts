@@ -211,13 +211,11 @@ export class LocationService {
         },
       });
 
-      location = {
+      location = await this.locationRepository.save({
         ...location,
         isDeleted: true,
         deletedDate: new Date(),
-      };
-
-      location = await this.locationRepository.save(location);
+      });
       if (!location) {
         throw new Error('Fail to delete location');
       }
