@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { ApiResponse } from '../../helper/common/interfaces';
 import { CreateMenuDto, UpdateMenuDto } from './dtos/request';
@@ -13,7 +13,7 @@ import {
 import { Menu, MenuCreateInput, MenuUpdateInput } from './entities/menu.entity';
 
 @Injectable()
-export class MenuService extends SharedService {
+export class MenuService extends BaseService {
   constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
   ) {

@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { Order } from '../order/entities/order.entity';
 import { User } from '../user/entities/user.entity';
@@ -11,7 +11,7 @@ import { DeleteFeedbackResponse, FeedbackResponse } from './dtos/response';
 import { Feedback } from './entities/feedback.entity';
 
 @Injectable()
-export class FeedbackService extends SharedService {
+export class FeedbackService extends BaseService {
   constructor(
     @InjectRepository(Feedback)
     private readonly feedbackRepo: Repository<Feedback>,

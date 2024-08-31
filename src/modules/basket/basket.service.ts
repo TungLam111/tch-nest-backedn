@@ -1,15 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { AddBasketDTO, UpdateBasketDTO } from './dtos/request.dto';
 import { BasketListResponseDto, BasketResponseDto } from './dtos/response.dto';
 import { Basket } from './entities/basket.entity';
 
 @Injectable()
-export class BasketService extends SharedService {
+export class BasketService extends BaseService {
   constructor(
     @InjectRepository(Basket)
     private readonly basketRepository: Repository<Basket>,

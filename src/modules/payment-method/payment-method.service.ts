@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { PaymentMethodResponse } from './dtos/response';
 import { PaymentMethod } from './entities/payment-method.entity';
 
 @Injectable()
-export class PaymentMethodService extends SharedService {
+export class PaymentMethodService extends BaseService {
   constructor(
     @InjectRepository(PaymentMethod)
     private readonly paymentMethodRepo: Repository<PaymentMethod>,

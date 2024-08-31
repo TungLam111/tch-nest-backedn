@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { CouponType, OrderStatus } from 'src/helper/common/enum';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { IsNull, Repository } from 'typeorm';
 import { BasketService } from '../basket/basket.service';
 import { BasketListResponseDto } from '../basket/dtos/response.dto';
@@ -18,7 +18,7 @@ import { VerifyOrderResponse } from './dtos/response';
 import { Order, OrderCreateInput } from './entities/order.entity';
 
 @Injectable()
-export class OrderService extends SharedService {
+export class OrderService extends BaseService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,

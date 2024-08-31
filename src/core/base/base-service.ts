@@ -1,8 +1,8 @@
 import { HttpStatus, Logger } from '@nestjs/common';
-import { FunctionError } from './common/error_app';
-import { ApiResponse, ResponseData } from './common/interfaces';
+import { FunctionError } from '../../helper/common/error_app';
+import { ApiResponse, ResponseData } from '../../helper/common/interfaces';
 
-export class SharedService {
+export class BaseService {
   logger: Logger;
   constructor(name: string) {
     this.logger = new Logger(name);

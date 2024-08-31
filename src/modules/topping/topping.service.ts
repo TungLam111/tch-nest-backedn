@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { ToppingOption } from '../topping-option/entities/topping-option.entity';
 import { AddToppingOptionDto } from './dtos/add-topping-option.dto';
 import { Topping } from './entities/topping.entity';
 
 @Injectable()
-export class ToppingService extends SharedService {
+export class ToppingService extends BaseService {
   constructor(
     @InjectRepository(Topping) private toppingRepository: Repository<Topping>,
     @InjectRepository(ToppingOption)

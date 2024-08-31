@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { Store } from './entities/store.entity';
 import { CreateStoreDto } from './interfaces/create-store.dto';
@@ -10,7 +10,7 @@ import { GetStoreListDto } from './interfaces/get-store-list.dto';
 import { UpdateStoreDto } from './interfaces/update-store.dto';
 
 @Injectable()
-export class StoreService extends SharedService {
+export class StoreService extends BaseService {
   constructor(
     @InjectRepository(Store)
     private readonly storeRepository: Repository<Store>,

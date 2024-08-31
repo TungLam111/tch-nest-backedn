@@ -1,5 +1,6 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { ApiResponse, ResponseData } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
 import {
@@ -11,13 +12,14 @@ import { CreateLocationDto, UpdateLocationDto } from './dtos/request';
 import { DeleteLocationResponse, LocationResponse } from './dtos/response';
 
 @Injectable()
-export class LocationService {
+export class LocationService extends BaseService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location)
     private readonly locationRepository: Repository<Location>,
-  ) {}
-  private logger = new Logger(LocationService.name);
+  ) {
+    super(LocationService.name);
+  }
 
   async getLocationsByUser(
     user: User,

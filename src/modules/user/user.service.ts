@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { ApiResponse } from '../../helper/common/interfaces';
 import {
@@ -14,7 +14,7 @@ import { ProductService } from '../product/product.service';
 import { User } from './entities/user.entity';
 
 @Injectable()
-export class UserService extends SharedService {
+export class UserService extends BaseService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Product)

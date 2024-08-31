@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/core/base/base-service';
 import { FunctionError } from 'src/helper/common/error_app';
 import { ApiResponse } from 'src/helper/common/interfaces';
-import { SharedService } from 'src/helper/shared_service';
 import { Repository } from 'typeorm';
 import { CreatePaymentCardDto } from './dtos/create-payment-card.dto';
 import { UpdatePaymentCardDto } from './dtos/update-payment-card.dto';
@@ -13,7 +13,7 @@ import {
 } from './entities/payment-card.entity';
 
 @Injectable()
-export class PaymentCardService extends SharedService {
+export class PaymentCardService extends BaseService {
   constructor(
     @InjectRepository(PaymentCard)
     private readonly paymentCardService: Repository<PaymentCard>,
