@@ -1,4 +1,4 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import {
   Column,

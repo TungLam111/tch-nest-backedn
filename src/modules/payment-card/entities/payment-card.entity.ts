@@ -1,7 +1,12 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
- ManyToOne, JoinColumn } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { User } from 'src/modules/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class PaymentCard extends AbstractEntity {
@@ -12,7 +17,7 @@ export class PaymentCard extends AbstractEntity {
   userId: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 
   @Column()
@@ -35,15 +40,20 @@ export class PaymentCard extends AbstractEntity {
 
   @Column({ nullable: true })
   billingAddressID: string;
-
 }
 
-
 export function PaymentCardCreateInput(createPaymentCardDto: {
-        userId: string, cardHolderName: string, cardNumber: string, cardType: string, expirationDate: Date, startDate: Date, issueNumber: string | null, billingAddressID: string | null
-    }): PaymentCard {
+  userId: string;
+  cardHolderName: string;
+  cardNumber: string;
+  cardType: string;
+  expirationDate: Date;
+  startDate: Date;
+  issueNumber: string | null;
+  billingAddressID: string | null;
+}): PaymentCard {
   const createDto: PaymentCard = new PaymentCard();
-    createDto.userId = createPaymentCardDto.userId;
+  createDto.userId = createPaymentCardDto.userId;
   createDto.cardHolderName = createPaymentCardDto.cardHolderName;
   createDto.cardNumber = createPaymentCardDto.cardNumber;
   createDto.cardType = createPaymentCardDto.cardType;
@@ -54,22 +64,47 @@ export function PaymentCardCreateInput(createPaymentCardDto: {
   return createDto;
 }
 
-export function PaymentCardUpdateInput(currentPaymentCard: PaymentCard, updatePaymentCardDto: {
-        userId?: string, cardHolderName?: string, cardNumber?: string, cardType?: string, expirationDate?: Date, startDate?: Date, issueNumber?: string | null, billingAddressID?: string | null
-    }): PaymentCard {
-  const updatePaymentCard : PaymentCard = {
+export function PaymentCardUpdateInput(
+  currentPaymentCard: PaymentCard,
+  updatePaymentCardDto: {
+    userId?: string;
+    cardHolderName?: string;
+    cardNumber?: string;
+    cardType?: string;
+    expirationDate?: Date;
+    startDate?: Date;
+    issueNumber?: string | null;
+    billingAddressID?: string | null;
+  },
+): PaymentCard {
+  const updatePaymentCard: PaymentCard = {
     ...currentPaymentCard,
+  };
+
+  if (updatePaymentCardDto.userId != undefined) {
+    updatePaymentCard.userId = updatePaymentCardDto.userId;
+  }
+  if (updatePaymentCardDto.cardHolderName != undefined) {
+    updatePaymentCard.cardHolderName = updatePaymentCardDto.cardHolderName;
+  }
+  if (updatePaymentCardDto.cardNumber != undefined) {
+    updatePaymentCard.cardNumber = updatePaymentCardDto.cardNumber;
+  }
+  if (updatePaymentCardDto.cardType != undefined) {
+    updatePaymentCard.cardType = updatePaymentCardDto.cardType;
+  }
+  if (updatePaymentCardDto.expirationDate != undefined) {
+    updatePaymentCard.expirationDate = updatePaymentCardDto.expirationDate;
+  }
+  if (updatePaymentCardDto.startDate != undefined) {
+    updatePaymentCard.startDate = updatePaymentCardDto.startDate;
+  }
+  if (updatePaymentCardDto.issueNumber != undefined) {
+    updatePaymentCard.issueNumber = updatePaymentCardDto.issueNumber;
+  }
+  if (updatePaymentCardDto.billingAddressID != undefined) {
+    updatePaymentCard.billingAddressID = updatePaymentCardDto.billingAddressID;
   }
 
-      if (updatePaymentCardDto.userId != undefined) { updatePaymentCard.userId = updatePaymentCardDto.userId;}
-    if (updatePaymentCardDto.cardHolderName != undefined) { updatePaymentCard.cardHolderName = updatePaymentCardDto.cardHolderName;}
-    if (updatePaymentCardDto.cardNumber != undefined) { updatePaymentCard.cardNumber = updatePaymentCardDto.cardNumber;}
-    if (updatePaymentCardDto.cardType != undefined) { updatePaymentCard.cardType = updatePaymentCardDto.cardType;}
-    if (updatePaymentCardDto.expirationDate != undefined) { updatePaymentCard.expirationDate = updatePaymentCardDto.expirationDate;}
-    if (updatePaymentCardDto.startDate != undefined) { updatePaymentCard.startDate = updatePaymentCardDto.startDate;}
-    if (updatePaymentCardDto.issueNumber != undefined) { updatePaymentCard.issueNumber = updatePaymentCardDto.issueNumber;}
-    if (updatePaymentCardDto.billingAddressID != undefined) { updatePaymentCard.billingAddressID = updatePaymentCardDto.billingAddressID;}
-  
   return updatePaymentCard;
 }
-

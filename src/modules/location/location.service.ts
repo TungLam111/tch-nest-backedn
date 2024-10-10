@@ -12,13 +12,16 @@ import { CreateLocationDto, UpdateLocationDto } from './dtos/request';
 import { DeleteLocationResponse, LocationResponse } from './dtos/response';
 
 @Injectable()
-export class LocationService extends BaseService {
+export class LocationService extends BaseService<
+  Location,
+  Repository<Location>
+> {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Location)
     private readonly locationRepository: Repository<Location>,
   ) {
-    super(LocationService.name);
+    super(locationRepository, LocationService.name);
   }
 
   async getLocationsByUser(

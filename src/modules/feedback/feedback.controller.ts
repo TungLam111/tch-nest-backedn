@@ -19,8 +19,7 @@ export class FeedbackController {
 
   @Get()
   async getAllFeedbacks(@Res() res: any, @Req() req: AuthenticatedRoleRequest) {
-    const user = req.user.user || new User();
-    user.id = '342e7249-7f23-447d-8666-dcd7c10e9969';
+    const user = req.user.user;
     const result = await this.feedbackService.getAllFeedbacks(user);
     res.status(result.status).json(result.content);
   }
@@ -31,8 +30,7 @@ export class FeedbackController {
     @Req() req: AuthenticatedRoleRequest,
     @Body() createFeedbackDto: CreateFeedbackDto,
   ) {
-    const user = req.user.user || new User();
-    user.id = '342e7249-7f23-447d-8666-dcd7c10e9969';
+    const user = req.user.user;
     const result = await this.feedbackService.createNewFeedback(
       user,
       createFeedbackDto,
@@ -47,8 +45,7 @@ export class FeedbackController {
     @Param('id') feedbackId: string,
   ) {
     const user = req.user.user || new User();
-    user.id = '342e7249-7f23-447d-8666-dcd7c10e9969';
-    const result = await this.feedbackService.delete(user, feedbackId);
+    const result = await this.feedbackService.deleteFeedback(user, feedbackId);
     res.status(result.status).json(result.content);
   }
 }

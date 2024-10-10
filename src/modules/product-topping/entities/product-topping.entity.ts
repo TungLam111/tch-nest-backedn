@@ -1,8 +1,13 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
- ManyToOne, JoinColumn } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { Product } from 'src/modules/product/entities/product.entity';
 import { Topping } from 'src/modules/topping/entities/topping.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class ProductTopping extends AbstractEntity {
@@ -13,38 +18,44 @@ export class ProductTopping extends AbstractEntity {
   productId: string;
 
   @ManyToOne(() => Product)
-  @JoinColumn({ name: 'productId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product: Product;
 
   @Column()
   toppingId: string;
 
   @ManyToOne(() => Topping)
-  @JoinColumn({ name: 'toppingId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'toppingId', referencedColumnName: 'id' })
   topping: Topping;
-
 }
 
-
 export function ProductToppingCreateInput(createProductToppingDto: {
-        productId: string, toppingId: string
-    }): ProductTopping {
+  productId: string;
+  toppingId: string;
+}): ProductTopping {
   const createDto: ProductTopping = new ProductTopping();
-    createDto.productId = createProductToppingDto.productId;
+  createDto.productId = createProductToppingDto.productId;
   createDto.toppingId = createProductToppingDto.toppingId;
   return createDto;
 }
 
-export function ProductToppingUpdateInput(currentProductTopping: ProductTopping, updateProductToppingDto: {
-        productId?: string, toppingId?: string
-    }): ProductTopping {
-  const updateProductTopping : ProductTopping = {
+export function ProductToppingUpdateInput(
+  currentProductTopping: ProductTopping,
+  updateProductToppingDto: {
+    productId?: string;
+    toppingId?: string;
+  },
+): ProductTopping {
+  const updateProductTopping: ProductTopping = {
     ...currentProductTopping,
+  };
+
+  if (updateProductToppingDto.productId != undefined) {
+    updateProductTopping.productId = updateProductToppingDto.productId;
+  }
+  if (updateProductToppingDto.toppingId != undefined) {
+    updateProductTopping.toppingId = updateProductToppingDto.toppingId;
   }
 
-      if (updateProductToppingDto.productId != undefined) { updateProductTopping.productId = updateProductToppingDto.productId;}
-    if (updateProductToppingDto.toppingId != undefined) { updateProductTopping.toppingId = updateProductToppingDto.toppingId;}
-  
   return updateProductTopping;
 }
-

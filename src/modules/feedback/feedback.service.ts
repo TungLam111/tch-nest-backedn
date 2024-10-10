@@ -1,36 +1,30 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core/base/base-service';
-import { FunctionError } from 'src/helper/common/error_app';
+import { OrderRepository } from 'src/core/repository/order.repository';
+import { FunctionError } from 'src/helper/common/error-app';
 import { ApiResponse } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
-import { Order } from '../order/entities/order.entity';
+import { FeedbackRepository } from '../../core/repository/feedback.repository';
 import { User } from '../user/entities/user.entity';
 import { CreateFeedbackDto } from './dtos/request';
 import { DeleteFeedbackResponse, FeedbackResponse } from './dtos/response';
-import { Feedback } from './entities/feedback.entity';
+import { Feedback, FeedbackCreateInput } from './entities/feedback.entity';
 
 @Injectable()
-export class FeedbackService extends BaseService {
+export class FeedbackService extends BaseService<
+  Feedback,
+  Repository<Feedback>
+> {
   constructor(
-    @InjectRepository(Feedback)
-    private readonly feedbackRepo: Repository<Feedback>,
-    @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
+    private readonly feedbackRepository: FeedbackRepository,
+    private readonly orderRepository: OrderRepository,
   ) {
-    super(FeedbackService.name);
+    super(feedbackRepository, FeedbackService.name);
   }
 
   async getAllFeedbacks(user: User): Promise<ApiResponse<FeedbackResponse[]>> {
     return this.handleRequest<FeedbackResponse[]>(async () => {
-      const feedbacks = await this.feedbackRepo.find({
-        where: {
-          isDeleted: false,
-          userId: user.id,
-        },
-        order: {
-          updatedAt: 'ASC',
-        },
-      });
+      const feedbacks = await this.feedbackRepository.findAllByUserId(user.id);
       return feedbacks.map((e) => ({
         id: e.id,
         content: e.content,
@@ -45,21 +39,20 @@ export class FeedbackService extends BaseService {
     createFeedbackDto: CreateFeedbackDto,
   ): Promise<ApiResponse<FeedbackResponse>> {
     return this.handleRequest<FeedbackResponse>(async () => {
-      const checkOrder = await this.orderRepo.findOne({
-        where: {
-          isDeleted: false,
-          id: createFeedbackDto.orderId,
-        },
-      });
+      const checkOrder = await this.orderRepository.findOneById(
+        createFeedbackDto.orderId,
+      );
       if (!checkOrder) {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Order not found');
       }
-      let feedback = new Feedback();
-      feedback.content = createFeedbackDto.content;
-      feedback.orderId = createFeedbackDto.orderId;
-      feedback.userId = user.id;
 
-      feedback = await this.feedbackRepo.save(feedback);
+      let feedback: Feedback = FeedbackCreateInput({
+        content: createFeedbackDto.content,
+        orderId: createFeedbackDto.orderId,
+        userId: user.id,
+      });
+
+      feedback = await this.feedbackRepository.storeEntity(feedback);
 
       if (!feedback) {
         throw new FunctionError(
@@ -76,39 +69,31 @@ export class FeedbackService extends BaseService {
     }, HttpStatus.CREATED);
   }
 
-  async delete(
-    user: User,
+  async deleteFeedback(
+    _: User,
     feedbackId: string,
   ): Promise<ApiResponse<DeleteFeedbackResponse>> {
     return this.handleRequest<DeleteFeedbackResponse>(async () => {
-      let deleteFeedBack = await this.feedbackRepo.findOne({
-        where: {
-          isDeleted: false,
-          id: feedbackId,
-          userId: user.id,
-        },
-      });
-      if (!deleteFeedBack) {
+      let findFeedback = await this.feedbackRepository.findOneById(feedbackId);
+      if (!findFeedback) {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Feedback not found');
       }
-      deleteFeedBack.deletedDate = new Date();
-      deleteFeedBack.isDeleted = false;
 
-      deleteFeedBack = await this.feedbackRepo.save(deleteFeedBack);
+      const deleteFb = await this.feedbackRepository.deleteEntity(findFeedback);
 
-      if (!deleteFeedBack) {
+      if (!deleteFb) {
         throw new FunctionError(
           HttpStatus.INTERNAL_SERVER_ERROR,
           'Fail to delete feedback',
         );
       }
       return {
-        id: deleteFeedBack.id,
-        content: deleteFeedBack.content,
-        isDeleted: deleteFeedBack.isDeleted,
-        deletedDate: deleteFeedBack.deletedDate,
-        userId: deleteFeedBack.userId,
-        orderId: deleteFeedBack.orderId,
+        id: deleteFb.id,
+        content: deleteFb.content,
+        isDeleted: deleteFb.isDeleted,
+        deletedDate: deleteFb.deletedDate,
+        userId: deleteFb.userId,
+        orderId: deleteFb.orderId,
       };
     });
   }

@@ -1,7 +1,12 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
- ManyToOne, JoinColumn } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { User } from 'src/modules/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Location extends AbstractEntity {
@@ -27,17 +32,20 @@ export class Location extends AbstractEntity {
   userId: string;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id'})
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
-
 }
 
-
 export function LocationCreateInput(createLocationDto: {
-        address: string, name: string | null, latitude: string, longitude: string, ggPlaceId: string, userId: string
-    }): Location {
+  address: string;
+  name: string | null;
+  latitude: string;
+  longitude: string;
+  ggPlaceId: string;
+  userId: string;
+}): Location {
   const createDto: Location = new Location();
-    createDto.address = createLocationDto.address;
+  createDto.address = createLocationDto.address;
   createDto.name = createLocationDto.name;
   createDto.latitude = createLocationDto.latitude;
   createDto.longitude = createLocationDto.longitude;
@@ -46,20 +54,39 @@ export function LocationCreateInput(createLocationDto: {
   return createDto;
 }
 
-export function LocationUpdateInput(currentLocation: Location, updateLocationDto: {
-        address?: string, name?: string | null, latitude?: string, longitude?: string, ggPlaceId?: string, userId?: string
-    }): Location {
-  const updateLocation : Location = {
+export function LocationUpdateInput(
+  currentLocation: Location,
+  updateLocationDto: {
+    address?: string;
+    name?: string | null;
+    latitude?: string;
+    longitude?: string;
+    ggPlaceId?: string;
+    userId?: string;
+  },
+): Location {
+  const updateLocation: Location = {
     ...currentLocation,
+  };
+
+  if (updateLocationDto.address != undefined) {
+    updateLocation.address = updateLocationDto.address;
+  }
+  if (updateLocationDto.name != undefined) {
+    updateLocation.name = updateLocationDto.name;
+  }
+  if (updateLocationDto.latitude != undefined) {
+    updateLocation.latitude = updateLocationDto.latitude;
+  }
+  if (updateLocationDto.longitude != undefined) {
+    updateLocation.longitude = updateLocationDto.longitude;
+  }
+  if (updateLocationDto.ggPlaceId != undefined) {
+    updateLocation.ggPlaceId = updateLocationDto.ggPlaceId;
+  }
+  if (updateLocationDto.userId != undefined) {
+    updateLocation.userId = updateLocationDto.userId;
   }
 
-      if (updateLocationDto.address != undefined) { updateLocation.address = updateLocationDto.address;}
-    if (updateLocationDto.name != undefined) { updateLocation.name = updateLocationDto.name;}
-    if (updateLocationDto.latitude != undefined) { updateLocation.latitude = updateLocationDto.latitude;}
-    if (updateLocationDto.longitude != undefined) { updateLocation.longitude = updateLocationDto.longitude;}
-    if (updateLocationDto.ggPlaceId != undefined) { updateLocation.ggPlaceId = updateLocationDto.ggPlaceId;}
-    if (updateLocationDto.userId != undefined) { updateLocation.userId = updateLocationDto.userId;}
-  
   return updateLocation;
 }
-

@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core/base/base-service';
-import { FunctionError } from 'src/helper/common/error_app';
+import { FunctionError } from 'src/helper/common/error-app';
 import { ApiResponse } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
 import { Store } from './entities/store.entity';
@@ -10,12 +10,12 @@ import { GetStoreListDto } from './interfaces/get-store-list.dto';
 import { UpdateStoreDto } from './interfaces/update-store.dto';
 
 @Injectable()
-export class StoreService extends BaseService {
+export class StoreService extends BaseService<Store, Repository<Store>> {
   constructor(
     @InjectRepository(Store)
     private readonly storeRepository: Repository<Store>,
   ) {
-    super(StoreService.name);
+    super(storeRepository, StoreService.name);
   }
 
   async getAllStore(filter: GetStoreListDto): Promise<ApiResponse<Store[]>> {

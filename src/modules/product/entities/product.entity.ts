@@ -1,4 +1,4 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

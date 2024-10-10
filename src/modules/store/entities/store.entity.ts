@@ -1,6 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
-  } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Store extends AbstractEntity {
@@ -30,15 +29,20 @@ export class Store extends AbstractEntity {
 
   @Column({ nullable: true })
   images: string;
-
 }
 
-
 export function StoreCreateInput(createStoreDto: {
-        name: string, contactPhone: string, address: string, latitude: string, longitude: string, ggPlaceId: string, timeSchedule: string, images: string | null
-    }): Store {
+  name: string;
+  contactPhone: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  ggPlaceId: string;
+  timeSchedule: string;
+  images: string | null;
+}): Store {
   const createDto: Store = new Store();
-    createDto.name = createStoreDto.name;
+  createDto.name = createStoreDto.name;
   createDto.contactPhone = createStoreDto.contactPhone;
   createDto.address = createStoreDto.address;
   createDto.latitude = createStoreDto.latitude;
@@ -49,22 +53,47 @@ export function StoreCreateInput(createStoreDto: {
   return createDto;
 }
 
-export function StoreUpdateInput(currentStore: Store, updateStoreDto: {
-        name?: string, contactPhone?: string, address?: string, latitude?: string, longitude?: string, ggPlaceId?: string, timeSchedule?: string, images?: string | null
-    }): Store {
-  const updateStore : Store = {
+export function StoreUpdateInput(
+  currentStore: Store,
+  updateStoreDto: {
+    name?: string;
+    contactPhone?: string;
+    address?: string;
+    latitude?: string;
+    longitude?: string;
+    ggPlaceId?: string;
+    timeSchedule?: string;
+    images?: string | null;
+  },
+): Store {
+  const updateStore: Store = {
     ...currentStore,
+  };
+
+  if (updateStoreDto.name != undefined) {
+    updateStore.name = updateStoreDto.name;
+  }
+  if (updateStoreDto.contactPhone != undefined) {
+    updateStore.contactPhone = updateStoreDto.contactPhone;
+  }
+  if (updateStoreDto.address != undefined) {
+    updateStore.address = updateStoreDto.address;
+  }
+  if (updateStoreDto.latitude != undefined) {
+    updateStore.latitude = updateStoreDto.latitude;
+  }
+  if (updateStoreDto.longitude != undefined) {
+    updateStore.longitude = updateStoreDto.longitude;
+  }
+  if (updateStoreDto.ggPlaceId != undefined) {
+    updateStore.ggPlaceId = updateStoreDto.ggPlaceId;
+  }
+  if (updateStoreDto.timeSchedule != undefined) {
+    updateStore.timeSchedule = updateStoreDto.timeSchedule;
+  }
+  if (updateStoreDto.images != undefined) {
+    updateStore.images = updateStoreDto.images;
   }
 
-      if (updateStoreDto.name != undefined) { updateStore.name = updateStoreDto.name;}
-    if (updateStoreDto.contactPhone != undefined) { updateStore.contactPhone = updateStoreDto.contactPhone;}
-    if (updateStoreDto.address != undefined) { updateStore.address = updateStoreDto.address;}
-    if (updateStoreDto.latitude != undefined) { updateStore.latitude = updateStoreDto.latitude;}
-    if (updateStoreDto.longitude != undefined) { updateStore.longitude = updateStoreDto.longitude;}
-    if (updateStoreDto.ggPlaceId != undefined) { updateStore.ggPlaceId = updateStoreDto.ggPlaceId;}
-    if (updateStoreDto.timeSchedule != undefined) { updateStore.timeSchedule = updateStoreDto.timeSchedule;}
-    if (updateStoreDto.images != undefined) { updateStore.images = updateStoreDto.images;}
-  
   return updateStore;
 }
-

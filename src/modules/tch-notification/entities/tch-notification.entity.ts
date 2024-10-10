@@ -1,6 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
-  } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class TchNotification extends AbstractEntity {
@@ -24,15 +23,18 @@ export class TchNotification extends AbstractEntity {
 
   @Column()
   meta_data: string;
-
 }
 
-
 export function TchNotificationCreateInput(createTchNotificationDto: {
-        title: string, body: string, thumbnail: string | null, noti_type: string, seen_by_users: string, meta_data: string
-    }): TchNotification {
+  title: string;
+  body: string;
+  thumbnail: string | null;
+  noti_type: string;
+  seen_by_users: string;
+  meta_data: string;
+}): TchNotification {
   const createDto: TchNotification = new TchNotification();
-    createDto.title = createTchNotificationDto.title;
+  createDto.title = createTchNotificationDto.title;
   createDto.body = createTchNotificationDto.body;
   createDto.thumbnail = createTchNotificationDto.thumbnail;
   createDto.noti_type = createTchNotificationDto.noti_type;
@@ -41,20 +43,40 @@ export function TchNotificationCreateInput(createTchNotificationDto: {
   return createDto;
 }
 
-export function TchNotificationUpdateInput(currentTchNotification: TchNotification, updateTchNotificationDto: {
-        title?: string, body?: string, thumbnail?: string | null, noti_type?: string, seen_by_users?: string, meta_data?: string
-    }): TchNotification {
-  const updateTchNotification : TchNotification = {
+export function TchNotificationUpdateInput(
+  currentTchNotification: TchNotification,
+  updateTchNotificationDto: {
+    title?: string;
+    body?: string;
+    thumbnail?: string | null;
+    noti_type?: string;
+    seen_by_users?: string;
+    meta_data?: string;
+  },
+): TchNotification {
+  const updateTchNotification: TchNotification = {
     ...currentTchNotification,
+  };
+
+  if (updateTchNotificationDto.title != undefined) {
+    updateTchNotification.title = updateTchNotificationDto.title;
+  }
+  if (updateTchNotificationDto.body != undefined) {
+    updateTchNotification.body = updateTchNotificationDto.body;
+  }
+  if (updateTchNotificationDto.thumbnail != undefined) {
+    updateTchNotification.thumbnail = updateTchNotificationDto.thumbnail;
+  }
+  if (updateTchNotificationDto.noti_type != undefined) {
+    updateTchNotification.noti_type = updateTchNotificationDto.noti_type;
+  }
+  if (updateTchNotificationDto.seen_by_users != undefined) {
+    updateTchNotification.seen_by_users =
+      updateTchNotificationDto.seen_by_users;
+  }
+  if (updateTchNotificationDto.meta_data != undefined) {
+    updateTchNotification.meta_data = updateTchNotificationDto.meta_data;
   }
 
-      if (updateTchNotificationDto.title != undefined) { updateTchNotification.title = updateTchNotificationDto.title;}
-    if (updateTchNotificationDto.body != undefined) { updateTchNotification.body = updateTchNotificationDto.body;}
-    if (updateTchNotificationDto.thumbnail != undefined) { updateTchNotification.thumbnail = updateTchNotificationDto.thumbnail;}
-    if (updateTchNotificationDto.noti_type != undefined) { updateTchNotification.noti_type = updateTchNotificationDto.noti_type;}
-    if (updateTchNotificationDto.seen_by_users != undefined) { updateTchNotification.seen_by_users = updateTchNotificationDto.seen_by_users;}
-    if (updateTchNotificationDto.meta_data != undefined) { updateTchNotification.meta_data = updateTchNotificationDto.meta_data;}
-  
   return updateTchNotification;
 }
-

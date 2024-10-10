@@ -1,6 +1,5 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
-import { Column, Entity, PrimaryGeneratedColumn,
-  } from 'typeorm';
+import { AbstractEntity } from 'src/helper/common/common-entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class OrderRating extends AbstractEntity {
@@ -9,27 +8,29 @@ export class OrderRating extends AbstractEntity {
 
   @Column()
   content: string;
-
 }
 
-
 export function OrderRatingCreateInput(createOrderRatingDto: {
-        content: string
-    }): OrderRating {
+  content: string;
+}): OrderRating {
   const createDto: OrderRating = new OrderRating();
-    createDto.content = createOrderRatingDto.content;
+  createDto.content = createOrderRatingDto.content;
   return createDto;
 }
 
-export function OrderRatingUpdateInput(currentOrderRating: OrderRating, updateOrderRatingDto: {
-        content?: string
-    }): OrderRating {
-  const updateOrderRating : OrderRating = {
+export function OrderRatingUpdateInput(
+  currentOrderRating: OrderRating,
+  updateOrderRatingDto: {
+    content?: string;
+  },
+): OrderRating {
+  const updateOrderRating: OrderRating = {
     ...currentOrderRating,
+  };
+
+  if (updateOrderRatingDto.content != undefined) {
+    updateOrderRating.content = updateOrderRatingDto.content;
   }
 
-      if (updateOrderRatingDto.content != undefined) { updateOrderRating.content = updateOrderRatingDto.content;}
-  
   return updateOrderRating;
 }
-

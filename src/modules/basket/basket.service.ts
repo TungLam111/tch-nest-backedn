@@ -1,7 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core/base/base-service';
-import { FunctionError } from 'src/helper/common/error_app';
+import { BasketRepository } from 'src/core/repository/basket.repository';
+import { FunctionError } from 'src/helper/common/error-app';
 import { ApiResponse } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
 import { AddBasketDTO, UpdateBasketDTO } from './dtos/request.dto';
@@ -9,12 +10,12 @@ import { BasketListResponseDto, BasketResponseDto } from './dtos/response.dto';
 import { Basket } from './entities/basket.entity';
 
 @Injectable()
-export class BasketService extends BaseService {
+export class BasketService extends BaseService<Basket, Repository<Basket>> {
   constructor(
     @InjectRepository(Basket)
-    private readonly basketRepository: Repository<Basket>,
+    private readonly basketRepository: BasketRepository,
   ) {
-    super(BasketService.name);
+    super(basketRepository, BasketService.name);
   }
 
   async getAllBasketItems(
@@ -26,16 +27,8 @@ export class BasketService extends BaseService {
   }
 
   async getAllRecentBaskets(userId: string): Promise<BasketListResponseDto> {
-    const baskets = await this.basketRepository.find({
-      where: {
-        isDeleted: false,
-        userId: userId,
-        isDone: false,
-      },
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+    const baskets =
+      await this.basketRepository.findAllRecentBasketsByUserId(userId);
 
     if (baskets !== undefined && baskets !== null) {
       let basketList = baskets.map(
@@ -66,18 +59,11 @@ export class BasketService extends BaseService {
   }
 
   async getOneBasketItem(
-    userId: string,
+    _: string,
     basketId: string,
   ): Promise<ApiResponse<BasketResponseDto>> {
     return this.handleRequest<BasketResponseDto>(async () => {
-      const basket = await this.basketRepository.findOne({
-        where: {
-          isDeleted: false,
-          userId: userId,
-          id: basketId,
-          isDone: false,
-        },
-      });
+      const basket = await this.basketRepository.findOneById(basketId);
 
       if (basket !== null && basket !== undefined) {
         return <BasketResponseDto>{
@@ -103,24 +89,14 @@ export class BasketService extends BaseService {
     basketId: string,
   ): Promise<ApiResponse<Basket>> {
     return this.handleRequest<Basket>(async () => {
-      const basket = await this.basketRepository.findOne({
-        where: {
-          isDeleted: false,
-          userId: userId,
-          id: basketId,
-        },
-      });
+      const basket = await this.basketRepository.findOneById(basketId);
 
       if (basket === undefined || basket === null) {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Basket not found');
       }
 
-      basket.deletedDate = new Date();
-      basket.isDeleted = true;
-      basket.isDone = true;
-
-      const updatedBasket = await this.basketRepository.save(basket);
-      return updatedBasket;
+      const deletedBasket = await this.basketRepository.deleteEntity(basket);
+      return deletedBasket;
     });
   }
 
@@ -140,7 +116,7 @@ export class BasketService extends BaseService {
       newBasket.mealName = dto.mealName;
       newBasket.isDone = false;
 
-      const addedBasket = await this.basketRepository.save(newBasket);
+      const addedBasket = await this.basketRepository.storeEntity(newBasket);
 
       if (addedBasket !== undefined && addedBasket !== null) {
         return addedBasket;
@@ -155,24 +131,19 @@ export class BasketService extends BaseService {
     dto: UpdateBasketDTO,
   ): Promise<ApiResponse<Basket>> {
     return this.handleRequest<Basket>(async () => {
-      const findBasket = await this.basketRepository.findOne({
-        where: {
-          id: basketId,
-          userId: userId,
-        },
-      });
+      const findBasket =
+        await this.basketRepository.findOneNotDoneById(basketId);
 
       if (!findBasket || findBasket === undefined) {
         throw new FunctionError(HttpStatus.BAD_REQUEST, 'Cannot find basket');
       }
 
-      const updatedBasket = await this.basketRepository.save({
+      const updatedBasket = await this.basketRepository.updateEntity({
         ...findBasket,
         mealId: dto.mealId,
         price: dto.price,
         quantity: dto.quantity,
         topping: dto.topping,
-
         mealCategory: dto.mealCategory,
         mealImage: dto.mealImage,
         mealName: dto.mealName,

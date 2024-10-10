@@ -7,12 +7,15 @@ import { PaymentMethodResponse } from './dtos/response';
 import { PaymentMethod } from './entities/payment-method.entity';
 
 @Injectable()
-export class PaymentMethodService extends BaseService {
+export class PaymentMethodService extends BaseService<
+  PaymentMethod,
+  Repository<PaymentMethod>
+> {
   constructor(
     @InjectRepository(PaymentMethod)
     private readonly paymentMethodRepo: Repository<PaymentMethod>,
   ) {
-    super(PaymentMethodService.name);
+    super(paymentMethodRepo, PaymentMethodService.name);
   }
   async getAll(): Promise<ApiResponse<PaymentMethodResponse[]>> {
     return this.handleRequest<PaymentMethodResponse[]>(async () => {

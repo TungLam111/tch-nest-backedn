@@ -8,12 +8,12 @@ import { CouponResponse } from './dtos/response.dto';
 import { Coupon, CouponCreateInput } from './entities/coupon.entity';
 
 @Injectable()
-export class CouponService extends BaseService {
+export class CouponService extends BaseService<Coupon, Repository<Coupon>> {
   constructor(
     @InjectRepository(Coupon)
     private readonly couponRepository: Repository<Coupon>,
   ) {
-    super(CouponService.name);
+    super(couponRepository, CouponService.name);
   }
 
   async getAll(userId: string): Promise<ApiResponse<CouponResponse[]>> {

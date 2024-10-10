@@ -1,4 +1,4 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { Coupon } from 'src/modules/coupon/entities/coupon.entity';
 import { Location } from 'src/modules/location/entities/location.entity';
 import { OrderRating } from 'src/modules/order-rating/entities/order-rating.entity';

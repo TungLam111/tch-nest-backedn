@@ -1,4 +1,4 @@
-import { AbstractEntity } from 'src/helper/common/common_entity';
+import { AbstractEntity } from 'src/helper/common/common-entity';
 import { Menu } from 'src/modules/menu/entities/menu.entity';
 import { Product } from 'src/modules/product/entities/product.entity';
 import {

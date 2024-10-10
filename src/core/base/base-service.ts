@@ -1,12 +1,33 @@
 import { HttpStatus, Logger } from '@nestjs/common';
-import { FunctionError } from '../../helper/common/error_app';
+import { AbstractEntity } from 'src/helper/common/common-entity';
+import { Repository } from 'typeorm';
+import { EntityId } from 'typeorm/repository/EntityId';
+import { FunctionError } from '../../helper/common/error-app';
 import { ApiResponse, ResponseData } from '../../helper/common/interfaces';
 
-export class BaseService {
+export interface IBaseRepository<T> {
+  // index(): Promise<T[]>;
+
+  findOneById(id: EntityId): Promise<T>;
+
+  findManyByIds(id: [EntityId]): Promise<T[]>;
+
+  storeEntity(data: T): Promise<T>;
+
+  updateEntity(data: T): Promise<T>;
+
+  deleteEntity(data: T): Promise<T>;
+}
+
+export class BaseService<T extends AbstractEntity, R extends Repository<T>> {
   logger: Logger;
-  constructor(name: string) {
+  readonly repository: R;
+
+  constructor(repository: R, name: string) {
     this.logger = new Logger(name);
+    this.repository = repository;
   }
+
   async handleRequest<T>(
     operation: () => Promise<T>,
     successStatusCode?: number,

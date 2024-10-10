@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core/base/base-service';
-import { FunctionError } from 'src/helper/common/error_app';
+import { FunctionError } from 'src/helper/common/error-app';
 import { ApiResponse } from 'src/helper/common/interfaces';
 import { Repository } from 'typeorm';
 import { CreatePaymentCardDto } from './dtos/create-payment-card.dto';
@@ -13,16 +13,19 @@ import {
 } from './entities/payment-card.entity';
 
 @Injectable()
-export class PaymentCardService extends BaseService {
+export class PaymentCardService extends BaseService<
+  PaymentCard,
+  Repository<PaymentCard>
+> {
   constructor(
     @InjectRepository(PaymentCard)
-    private readonly paymentCardService: Repository<PaymentCard>,
+    private readonly paymentCardRepo: Repository<PaymentCard>,
   ) {
-    super(PaymentCardService.name);
+    super(paymentCardRepo, PaymentCardService.name);
   }
   async getAll(userId: string): Promise<ApiResponse<PaymentCard[]>> {
     return this.handleRequest<PaymentCard[]>(async () => {
-      const cards = await this.paymentCardService.find({
+      const cards = await this.paymentCardRepo.find({
         where: {
           isDeleted: false,
           userId: userId,
@@ -37,7 +40,7 @@ export class PaymentCardService extends BaseService {
     cardId: string,
   ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
-      const card = await this.paymentCardService.findOne({
+      const card = await this.paymentCardRepo.findOne({
         where: {
           isDeleted: false,
           id: cardId,
@@ -53,7 +56,7 @@ export class PaymentCardService extends BaseService {
     createPaymentCardDto: CreatePaymentCardDto,
   ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
-      const findCard = await this.paymentCardService.findOne({
+      const findCard = await this.paymentCardRepo.findOne({
         where: {
           isDeleted: false,
           userId: userId,
@@ -69,7 +72,7 @@ export class PaymentCardService extends BaseService {
         ...createPaymentCardDto,
         userId: userId,
       });
-      const createdCard = await this.paymentCardService.save(paymentCardInput);
+      const createdCard = await this.paymentCardRepo.save(paymentCardInput);
 
       console.log(JSON.stringify(createdCard));
 
@@ -83,7 +86,7 @@ export class PaymentCardService extends BaseService {
     dto: UpdatePaymentCardDto,
   ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
-      const findCard = await this.paymentCardService.findOne({
+      const findCard = await this.paymentCardRepo.findOne({
         where: {
           isDeleted: false,
           userId: userId,
@@ -96,7 +99,7 @@ export class PaymentCardService extends BaseService {
       }
 
       const paymentCardInput = PaymentCardUpdateInput(findCard, dto);
-      const updateCard = await this.paymentCardService.save(paymentCardInput);
+      const updateCard = await this.paymentCardRepo.save(paymentCardInput);
       return updateCard;
     });
   }
@@ -106,7 +109,7 @@ export class PaymentCardService extends BaseService {
     cardId: string,
   ): Promise<ApiResponse<PaymentCard>> {
     return this.handleRequest<PaymentCard>(async () => {
-      const findCard = await this.paymentCardService.findOne({
+      const findCard = await this.paymentCardRepo.findOne({
         where: {
           isDeleted: false,
           userId: userId,
@@ -121,7 +124,7 @@ export class PaymentCardService extends BaseService {
       findCard.isDeleted = true;
       findCard.deletedDate = new Date();
 
-      const deletedCard = await this.paymentCardService.save(findCard);
+      const deletedCard = await this.paymentCardRepo.save(findCard);
       return deletedCard;
     });
   }

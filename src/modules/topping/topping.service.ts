@@ -8,13 +8,13 @@ import { AddToppingOptionDto } from './dtos/add-topping-option.dto';
 import { Topping } from './entities/topping.entity';
 
 @Injectable()
-export class ToppingService extends BaseService {
+export class ToppingService extends BaseService<Topping, Repository<Topping>> {
   constructor(
     @InjectRepository(Topping) private toppingRepository: Repository<Topping>,
     @InjectRepository(ToppingOption)
     private toppingOptionRepository: Repository<ToppingOption>,
   ) {
-    super(ToppingService.name);
+    super(toppingRepository, ToppingService.name);
   }
 
   async getAllToppings(): Promise<ApiResponse<any>> {

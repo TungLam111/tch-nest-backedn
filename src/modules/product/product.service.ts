@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/core/base/base-service';
-import { FunctionError } from 'src/helper/common/error_app';
+import { FunctionError } from 'src/helper/common/error-app';
 import { Repository } from 'typeorm';
 import { ApiResponse } from '../../helper/common/interfaces';
 import {
@@ -27,7 +27,7 @@ import {
 import { Product } from './entities/product.entity';
 
 @Injectable()
-export class ProductService extends BaseService {
+export class ProductService extends BaseService<Product, Repository<Product>> {
   constructor(
     @InjectRepository(Menu) private readonly menuRepository: Repository<Menu>,
     @InjectRepository(MenuProduct)
@@ -37,7 +37,7 @@ export class ProductService extends BaseService {
     @InjectRepository(ProductTopping)
     private readonly productToppingRepository: Repository<ProductTopping>,
   ) {
-    super(ProductService.name);
+    super(productRepository, ProductService.name);
   }
 
   async getProductsWithMenu(): Promise<
